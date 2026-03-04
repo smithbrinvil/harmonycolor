@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="ht">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kalfou - Validasyon Rezò Lokal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background: #0a0a0a; color: white; }
+        .gradient-text { background: linear-gradient(135deg, #FFD700, #FF6B35); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .glass { background: rgba(255,255,255,0.05); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); }
+        .pulse-ring { animation: pulse-ring 2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite; }
+        @keyframes pulse-ring { 0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(255, 107, 53, 0.7); } 70% { transform: scale(1); box-shadow: 0 0 0 20px rgba(255, 107, 53, 0); } 100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(255, 107, 53, 0); } }
+        .slide-up { animation: slideUp 0.5s ease-out; }
+        @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .map-dot { animation: blink 2s infinite; }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+        #globe-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; opacity: 0.3; }
+        .sms-bubble { position: relative; background: #25D366; color: white; padding: 12px 16px; border-radius: 16px; margin: 8px 0; max-width: 80%; }
+        .sms-bubble::after { content: ''; position: absolute; bottom: 0; left: -8px; width: 16px; height: 16px; background: #25D366; border-radius: 0 0 16px 0; }
+        .sms-bubble.received { background: #374151; align-self: flex-start; }
+        .sms-bubble.received::after { left: auto; right: -8px; background: #374151; border-radius: 0 0 0 16px; }
+    </style>
+</head>
+<body class="min-h-screen overflow-x-hidden">
+    <!-- Background 3D Globe -->
+    <div id="globe-container"></div>
+
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 glass px-6 py-4">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-gradient-to-br from-yellow-400 to-orange-500 flex items-center justify-center font-bold text-black">K</div>
+                <span class="text-xl font-bold gradient-text">Kalfou</span>
+            </div>
+            <div class="hidden md:flex gap-6 text-sm text-gray-300">
+                <a href="#comment" class="hover:text-white transition">Kijan li mache</a>
+                <a href="#ganyen" class="hover:text-white transition">Kijan pou w ganyen</a>
+                <a href="#biznis" class="hover:text-white transition">Pou biznis</a>
+            </div>
+            <button onclick="showApp()" class="bg-gradient-to-r from-orange-500 to-red-500 px-6 py-2 rounded-full font-semibold hover:scale-105 transition">
+                Kòmanse
+            </button>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="relative pt-32 pb-20 px-6">
+        <div class="max-w-7xl mx-auto grid md:grid-cols-2 gap-12 items-center">
+            <div class="slide-up">
+                <div class="inline-block px-4 py-1 rounded-full bg-orange-500/20 text-orange-400 text-sm font-semibold mb-6">
+                    🚀 Premye platfòm validasyon desantralize nan mond lan
+                </div>
+                <h1 class="text-5xl md:text-7xl font-bold leading-tight mb-6">
+                    Ou valide <span class="gradient-text">verite a</span>.<br>
+                    Ou touche <span class="gradient-text">lajan</span>.
+                </h1>
+                <p class="text-xl text-gray-400 mb-8 leading-relaxed">
+                    Reponn yon sèl kesyon pa SMS. 5 segonn. 0.05$. 
+                    <br>Premye travay nan mond lan ki pa mande ou anyen, selman prezans ou.
+                </p>
+                <div class="flex flex-wrap gap-4">
+                    <button onclick="showApp()" class="pulse-ring bg-gradient-to-r from-orange-500 to-red-500 px-8 py-4 rounded-full font-bold text-lg hover:scale-105 transition">
+                        Enskri gratis →
+                    </button>
+                    <button onclick="showDemo()" class="glass px-8 py-4 rounded-full font-semibold hover:bg-white/10 transition">
+                        ▶ Gade demo
+                    </button>
+                </div>
+                <div class="mt-8 flex items-center gap-4 text-sm text-gray-500">
+                    <div class="flex -space-x-2">
+                        <div class="w-8 h-8 rounded-full bg-blue-500 border-2 border-black"></div>
+                        <div class="w-8 h-8 rounded-full bg-green-500 border-2 border-black"></div>
+                        <div class="w-8 h-8 rounded-full bg-purple-500 border-2 border-black"></div>
+                    </div>
+                    <span>12,847 ayisyen deja aktif</span>
+                </div>
+            </div>
+            
+            <!-- Phone Mockup -->
+            <div class="relative flex justify-center">
+                <div class="relative w-80 h-[600px] bg-black rounded-[3rem] border-4 border-gray-800 shadow-2xl overflow-hidden">
+                    <div class="absolute top-0 w-full h-8 bg-black flex justify-center items-center">
+                        <div class="w-20 h-4 bg-gray-800 rounded-full"></div>
+                    </div>
+                    <div class="pt-12 px-4 h-full flex flex-col bg-gradient-to-b from-gray-900 to-black">
+                        <!-- Status Bar -->
+                        <div class="flex justify-between text-xs text-gray-400 mb-4">
+                            <span>9:41</span>
+                            <span>📶 4G 🔋</span>
+                        </div>
+                        
+                        <!-- App Screen -->
+                        <div id="phone-screen" class="flex-1 flex flex-col">
+                            <div class="text-center mb-6">
+                                <div class="w-16 h-16 mx-auto rounded-full bg-gradient-to-br from-yellow-400 to-orange-500 flex items-center justify-center text-2xl font-bold text-black mb-2">K</div>
+                                <h3 class="font-bold">Kalfou</h3>
+                                <p class="text-xs text-gray-400">Balans: <span id="demo-balance" class="text-green-400 font-bold">0.00 GQ</span></p>
+                            </div>
+                            
+                            <!-- SMS Interface -->
+                            <div class="flex-1 bg-gray-800 rounded-2xl p-3 overflow-y-auto" id="sms-chat">
+                                <div class="text-center text-xs text-gray-500 my-4">Jodia, 9:41 AM</div>
+                                <div class="sms-bubble text-sm">
+                                    Byenveni nan Kalfou! Reponn kesyon pou w ganyen GQ. Premye kesyon an rive nan 2 minit...
+                                </div>
+                            </div>
+                            
+                            <!-- Input -->
+                            <div class="mt-3 flex gap-2">
+                                <input type="text" placeholder="Ekri mesaj..." class="flex-1 bg-gray-800 rounded-full px-4 py-2 text-sm" disabled>
+                                <button class="w-10 h-10 rounded-full bg-green-500 flex items-center justify-center">➤</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Floating Stats -->
+                <div class="absolute -right-4 top-20 glass p-4 rounded-2xl slide-up" style="animation-delay: 0.2s">
+                    <div class="text-2xl font-bold text-green-400">+0.05 GQ</div>
+                    <div class="text-xs text-gray-400">Validasyon fèt</div>
+                </div>
+                <div class="absolute -left-4 bottom-32 glass p-4 rounded-2xl slide-up" style="animation-delay: 0.4s">
+                    <div class="text-2xl font-bold text-orange-400">2,847</div>
+                    <div class="text-xs text-gray-400">Validasyon jodia</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works -->
+    <section id="comment" class="py-20 px-6 glass">
+        <div class="max-w-7xl mx-auto">
+            <h2 class="text-4xl font-bold text-center mb-16">Kijan li mache <span class="gradient-text">an 3 etap</span></h2>
+            
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="text-center group">
+                    <div class="w-20 h-20 mx-auto rounded-2xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-3xl mb-6 group-hover:scale-110 transition">1</div>
+                    <h3 class="text-xl font-bold mb-3">Enskri pa SMS</h3>
+                    <p class="text-gray-400">Rele <code class="bg-gray-800 px-2 py-1 rounded">*384#</code> oswa voye <code class="bg-gray-800 px-2 py-1 rounded">KALFOU</code> bay 384. Gratis. 2 minit.</p>
+                </div>
+                
+                <div class="text-center group">
+                    <div class="w-20 h-20 mx-auto rounded-2xl bg-gradient-to-br from-orange-500 to-red-500 flex items-center justify-center text-3xl mb-6 group-hover:scale-110 transition">2</div>
+                    <h3 class="text-xl font-bold mb-3">Reponn kesyon</h3>
+                    <p class="text-gray-400">Ou resevwa 3-5 SMS pa jou. Reponn pa 1 oswa 2. 5 segonn chak.</p>
+                </div>
+                
+                <div class="text-center group">
+                    <div class="w-20 h-20 mx-auto rounded-2xl bg-gradient-to-br from-green-500 to-teal-500 flex items-center justify-center text-3xl mb-6 group-hover:scale-110 transition">3</div>
+                    <h3 class="text-xl font-bold mb-3">Touche lajan</h3>
+                    <p class="text-gray-400">Konvèti GQ an goud oswa dola. Retire nan Fonkose, MonCash, oswa kash.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Live Map Section -->
+    <section class="py-20 px-6">
+        <div class="max-w-7xl mx-auto">
+            <div class="flex flex-col md:flex-row gap-12 items-center">
+                <div class="flex-1">
+                    <h2 class="text-4xl font-bold mb-6">Gade <span class="gradient-text">validasyon yo</span> an tan reyèl</h2>
+                    <p class="text-gray-400 mb-6 text-lg">
+                        Chak pwen sou kat la se yon ayisyen ki fèk valide yon enfòmasyon. 
+                        Yo touche. Kliyan an touche. Verite a konfime.
+                    </p>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="glass p-4 rounded-xl">
+                            <div class="text-3xl font-bold text-green-400" id="stat-validations">0</div>
+                            <div class="text-sm text-gray-400">Validasyon jodia</div>
+                        </div>
+                        <div class="glass p-4 rounded-xl">
+                            <div class="text-3xl font-bold text-orange-400" id="stat-earnings">0</div>
+                            <div class="text-sm text-gray-400">GQ distribye</div>
+                        </div>
+                        <div class="glass p-4 rounded-xl">
+                            <div class="text-3xl font-bold text-blue-400" id="stat-users">12,847</div>
+                            <div class="text-sm text-gray-400">Validator aktif</div>
+                        </div>
+                        <div class="glass p-4 rounded-xl">
+                            <div class="text-3xl font-bold text-purple-400">98.7%</div>
+                            <div class="text-sm text-gray-400">Presizyon</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="flex-1 relative">
+                    <div class="glass rounded-2xl p-4 h-96 relative overflow-hidden">
+                        <div id="live-map" class="w-full h-full bg-gray-900 rounded-xl relative">
+                            <!-- Haiti Map SVG -->
+                            <svg viewBox="0 0 400 600" class="w-full h-full opacity-30">
+                                <path d="M150,100 Q200,80 250,120 T300,200 Q320,300 280,400 T200,550 Q150,500 100,400 T80,250 Q100,150 150,100" fill="#374151" stroke="#4B5563" stroke-width="2"/>
+                            </svg>
+                            <!-- Live Dots -->
+                            <div id="map-dots"></div>
+                        </div>
+                        <div class="absolute bottom-4 left-4 glass px-3 py-1 rounded-full text-xs">
+                            <span class="w-2 h-2 bg-green-400 rounded-full inline-block mr-2 animate-pulse"></span>
+                            Live - Pòtoprens, Jakmèl, Okap
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Earnings Calculator -->
+    <section id="ganyen" class="py-20 px-6 glass">
+        <div class="max-w-4xl mx-auto text-center">
+            <h2 class="text-4xl font-bold mb-6">Kalkile <span class="gradient-text">revni ou</span></h2>
+            
+            <div class="glass rounded-2xl p-8 mt-8">
+                <div class="grid md:grid-cols-3 gap-6 mb-8">
+                    <div>
+                        <label class="block text-sm text-gray-400 mb-2">Kantite repons/jou</label>
+                        <input type="range" min="1" max="20" value="5" id="calc-responses" class="w-full accent-orange-500" oninput="updateCalc()">
+                        <div class="text-2xl font-bold mt-2" id="calc-resp-val">5</div>
+                    </div>
+                    <div>
+                        <label class="block text-sm text-gray-400 mb-2">Validator k ap travay</label>
+                        <input type="range" min="1" max="10" value="1" id="calc-refs" class="w-full accent-blue-500" oninput="updateCalc()">
+                        <div class="text-2xl font-bold mt-2" id="calc-ref-val">1</div>
+                    </div>
+                    <div>
+                        <label class="block text-sm text-gray-400 mb-2">Prizan GQ (USD)</label>
+                        <select id="calc-price" class="bg-gray-800 rounded px-4 py-2" onchange="updateCalc()">
+                            <option value="0.01">$0.01</option>
+                            <option value="0.05" selected>$0.05</option>
+                            <option value="0.10">$0.10</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-3 gap-4 pt-6 border-t border-gray-700">
+                    <div>
+                        <div class="text-sm text-gray-400">Chak jou</div>
+                        <div class="text-2xl font-bold text-green-400" id="calc-daily">$0.25</div>
+                    </div>
+                    <div>
+                        <div class="text-sm text-gray-400">Chak mwa</div>
+                        <div class="text-2xl font-bold text-orange-400" id="calc-monthly">$7.50</div>
+                    </div>
+                    <div>
+                        <div class="text-sm text-gray-400">Chak ane</div>
+                        <div class="text-3xl font-bold gradient-text" id="calc-yearly">$91.25</div>
+                    </div>
+                </div>
+                
+                <p class="mt-6 text-sm text-gray-500">
+                    *San konte bonus Node Captain (10% sou validator ou rekrite yo)
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Business Section -->
+    <section id="biznis" class="py-20 px-6">
+        <div class="max-w-7xl mx-auto">
+            <h2 class="text-4xl font-bold text-center mb-16">Pou <span class="gradient-text">antreprenè ak biznis</span></h2>
+            
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="glass rounded-2xl p-8">
+                    <h3 class="text-2xl font-bold mb-4 flex items-center gap-3">
+                        <span class="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center">🏢</span>
+                        ONG & Agences
+                    </h3>
+                    <ul class="space-y-3 text-gray-300">
+                        <li class="flex items-start gap-3">
+                            <span class="text-green-400">✓</span>
+                            Verifye distribisyon èd nan 2 è olye de 2 semèn
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="text-green-400">✓</span>
+                            GPS proof + foto + konsènsis lokal
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="text-green-400">✓</span>
+                            90% mwens chè ke enketè tradisyonèl
+                        </li>
+                    </ul>
+                    <button class="mt-6 w-full py-3 rounded-full bg-blue-600 hover:bg-blue-500 transition font-semibold">
+                        Kontakte nou pou yon demo
+                    </button>
+                </div>
+                
+                <div class="glass rounded-2xl p-8">
+                    <h3 class="text-2xl font-bold mb-4 flex items-center gap-3">
+                        <span class="w-10 h-10 rounded-full bg-orange-500 flex items-center justify-center">🛡️</span>
+                        Asirans & Finans
+                    </h3>
+                    <ul class="space-y-3 text-gray-300">
+                        <li class="flex items-start gap-3">
+                            <span class="text-green-400">✓</span>
+                            Peman otomatik lè evenman an konfime
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="text-green-400">✓</span>
+                            Pa gen manti, pa gen koripsyon, pa gen reta
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="text-green-400">✓</span>
+                            Smart contract garanti ekzekisyon
+                        </li>
+                    </ul>
+                    <button class="mt-6 w-full py-3 rounded-full bg-orange-600 hover:bg-orange-500 transition font-semibold">
+                        Vini kliyan beta
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="py-20 px-6 text-center">
+        <div class="max-w-3xl mx-auto">
+            <h2 class="text-5xl font-bold mb-6">Ann <span class="gradient-text">chanje Ayiti</span> ansanm</h2>
+            <p class="text-xl text-gray-400 mb-8">
+                12,847 ayisyen ap tann ou. Premye milyon dola nan ekonomi kominotè a ap tann ou.
+            </p>
+            <div class="flex flex-wrap justify-center gap-4">
+                <button onclick="showApp()" class="pulse-ring bg-gradient-to-r from-orange-500 to-red-500 px-10 py-5 rounded-full font-bold text-xl hover:scale-105 transition">
+                    Mwen vle valide →
+                </button>
+                <button onclick="showBusiness()" class="glass px-10 py-5 rounded-full font-semibold hover:bg-white/10 transition">
+                    Mwen gen yon biznis
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-12 px-6 border-t border-gray-800">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-full bg-gradient-to-br from-yellow-400 to-orange-500 flex items-center justify-center font-bold text-black text-sm">K</div>
+                <span class="font-bold">Kalfou Protocol</span>
+            </div>
+            <div class="text-sm text-gray-500">
+                © 2024 Kalfou. Tout dwa rezève. Powered by Solana.
+            </div>
+            <div class="flex gap-4">
+                <a href="#" class="text-gray-400 hover:text-white">Twitter</a>
+                <a href="#" class="text-gray-400 hover:text-white">Discord</a>
+                <a href="#" class="text-gray-400 hover:text-white">GitHub</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- App Modal -->
+    <div id="app-modal" class="fixed inset-0 z-50 hidden bg-black/90 flex items-center justify-center p-4">
+        <div class="glass rounded-3xl max-w-md w-full p-6 relative">
+            <button onclick="hideApp()" class="absolute top-4 right-4 text-gray-400 hover:text-white text-2xl">×</button>
+            
+            <div class="text-center mb-6">
+                <div class="w-16 h-16 mx-auto rounded-full bg-gradient-to-br from-yellow-400 to-orange-500 flex items-center justify-center text-2xl font-bold text-black mb-3">K</div>
+                <h3 class="text-2xl font-bold">Kòmanse ak Kalfou</h3>
+                <p class="text-gray-400 text-sm">Etap 1 sou 3</p>
+            </div>
+            
+            <div id="app-step-1">
+                <label class="block text-sm text-gray-400 mb-2">Nimewo telefòn ou</label>
+                <div class="flex gap-2 mb-4">
+                    <span class="bg-gray-800 px-4 py-3 rounded-l-lg text-gray-400">+509</span>
+                    <input type="tel" id="phone-input" placeholder="34 56 78 90" class="flex-1 bg-gray-800 px-4 py-3 rounded-r-lg text-white">
+                </div>
+                <button onclick="sendCode()" class="w-full py-3 rounded-full bg-gradient-to-r from-orange-500 to-red-500 font-semibold hover:scale-105 transition">
+                    Resevwa kòd pa SMS
+                </button>
+            </div>
+            
+            <div id="app-step-2" class="hidden">
+                <label class="block text-sm text-gray-400 mb-2">Kòd verifikasyon</label>
+                <div class="flex gap-2 justify-center mb-4">
+                    <input type="text" maxlength="1" class="w-12 h-12 bg-gray-800 rounded-lg text-center text-xl font-bold">
+                    <input type="text" maxlength="1" class="w-12 h-12 bg-gray-800 rounded-lg text-center text-xl font-bold">
+                    <input type="text" maxlength="1" class="w-12 h-12 bg-gray-800 rounded-lg text-center text-xl font-bold">
+                    <input type="text" maxlength="1" class="w-12 h-12 bg-gray-800 rounded-lg text-center text-xl font-bold">
+                </div>
+                <button onclick="verifyCode()" class="w-full py-3 rounded-full bg-gradient-to-r from-orange-500 to-red-500 font-semibold hover:scale-105 transition">
+                    Verifye
+                </button>
+            </div>
+            
+            <div id="app-step-3" class="hidden text-center">
+                <div class="text-6xl mb-4">🎉</div>
+                <h4 class="text-xl font-bold mb-2">Ou anrejistre!</h4>
+                <p class="text-gray-400 mb-4">Ou resevwa 5 GQ kòm byenveni. Premye kesyon an rive nan kèk minit.</p>
+                <div class="bg-gray-800 rounded-lg p-4 mb-4">
+                    <div class="text-sm text-gray-400">Nimewo validator ou</div>
+                    <div class="text-2xl font-bold text-orange-400" id="validator-id">#K-78432</div>
+                </div>
+                <button onclick="hideApp()" class="w-full py-3 rounded-full bg-green-600 font-semibold">
+                    Fini
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 3D Globe Background
+        function initGlobe() {
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            document.getElementById('globe-container').appendChild(renderer.domElement);
+
+            // Globe
+            const geometry = new THREE.SphereGeometry(5, 64, 64);
+            const material = new THREE.MeshBasicMaterial({ 
+                color: 0xFF6B35, 
+                wireframe: true,
+                transparent: true,
+                opacity: 0.3
+            });
+            const globe = new THREE.Mesh(geometry, material);
+            scene.add(globe);
+
+            // Points for Haiti
+            const pointsGeometry = new THREE.BufferGeometry();
+            const pointsCount = 50;
+            const positions = new Float32Array(pointsCount * 3);
+            
+            for(let i = 0; i < pointsCount; i++) {
+                const phi = Math.acos(-1 + (2 * i) / pointsCount);
+                const theta = Math.sqrt(pointsCount * Math.PI) * phi;
+                positions[i * 3] = 5.1 * Math.cos(theta) * Math.sin(phi);
+                positions[i * 3 + 1] = 5.1 * Math.sin(theta) * Math.sin(phi);
+                positions[i * 3 + 2] = 5.1 * Math.cos(phi);
+            }
+            
+            pointsGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+            const pointsMaterial = new THREE.PointsMaterial({ color: 0xFFD700, size: 0.05 });
+            const points = new THREE.Points(pointsGeometry, pointsMaterial);
+            globe.add(points);
+
+            camera.position.z = 12;
+
+            function animate() {
+                requestAnimationFrame(animate);
+                globe.rotation.y += 0.002;
+                globe.rotation.x += 0.001;
+                renderer.render(scene, camera);
+            }
+            animate();
+
+            window.addEventListener('resize', () => {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+            });
+        }
+
+        // Live Stats Animation
+        function animateStats() {
+            const validations = document.getElementById('stat-validations');
+            const earnings = document.getElementById('stat-earnings');
+            let v = 2847, e = 142.35;
+            
+            setInterval(() => {
+                v += Math.floor(Math.random() * 3);
+                e += (Math.random() * 0.15).toFixed(2) * 1;
+                validations.textContent = v.toLocaleString();
+                earnings.textContent = e.toFixed(2) + ' GQ';
+            }, 2000);
+        }
+
+        // Live Map Dots
+        function createMapDots() {
+            const container = document.getElementById('map-dots');
+            const cities = [
+                {x: 200, y: 300, name: 'Pòtoprens'},
+                {x: 150, y: 400, name: 'Jacmel'},
+                {x: 120, y: 150, name: 'Okap'},
+                {x: 280, y: 200, name: 'Gonaïves'}
+            ];
+            
+            cities.forEach(city => {
+                const dot = document.createElement('div');
+                dot.className = 'absolute w-3 h-3 bg-green-400 rounded-full map-dot';
+                dot.style.left = city.x + 'px';
+                dot.style.top = city.y + 'px';
+                container.appendChild(dot);
+                
+                // Add ripple effect
+                setInterval(() => {
+                    const ripple = document.createElement('div');
+                    ripple.className = 'absolute w-3 h-3 bg-green-400 rounded-full';
+                    ripple.style.left = city.x + 'px';
+                    ripple.style.top = city.y + 'px';
+                    ripple.style.animation = 'ping 1s cubic-bezier(0, 0, 0.2, 1) infinite';
+                    container.appendChild(ripple);
+                    setTimeout(() => ripple.remove(), 1000);
+                }, 3000 + Math.random() * 2000);
+            });
+        }
+
+        // Calculator
+        function updateCalc() {
+            const resp = parseInt(document.getElementById('calc-responses').value);
+            const refs = parseInt(document.getElementById('calc-refs').value);
+            const price = parseFloat(document.getElementById('calc-price').value);
+            
+            document.getElementById('calc-resp-val').textContent = resp;
+            document.getElementById('calc-ref-val').textContent = refs;
+            
+            const daily = (resp * price * refs).toFixed(2);
+            const monthly = (daily * 30).toFixed(2);
+            const yearly = (daily * 365).toFixed(2);
+            
+            document.getElementById('calc-daily').textContent = '$' + daily;
+            document.getElementById('calc-monthly').textContent = '$' + monthly;
+            document.getElementById('calc-yearly').textContent = '$' + yearly;
+        }
+
+        // App Modal
+        function showApp() {
+            document.getElementById('app-modal').classList.remove('hidden');
+        }
+        
+        function hideApp() {
+            document.getElementById('app-modal').classList.add('hidden');
+            // Reset
+            document.getElementById('app-step-1').classList.remove('hidden');
+            document.getElementById('app-step-2').classList.add('hidden');
+            document.getElementById('app-step-3').classList.add('hidden');
+        }
+        
+        function sendCode() {
+            const phone = document.getElementById('phone-input').value;
+            if(phone.length < 8) {
+                alert('Antre yon nimewo valide');
+                return;
+            }
+            document.getElementById('app-step-1').classList.add('hidden');
+            document.getElementById('app-step-2').classList.remove('hidden');
+        }
+        
+        function verifyCode() {
+            document.getElementById('app-step-2').classList.add('hidden');
+            document.getElementById('app-step-3').classList.remove('hidden');
+            document.getElementById('validator-id').textContent = '#K-' + Math.floor(10000 + Math.random() * 90000);
+        }
+
+        function showDemo() {
+            // Simulate SMS conversation
+            const chat = document.getElementById('sms-chat');
+            const balance = document.getElementById('demo-balance');
+            
+            setTimeout(() => {
+                const msg1 = document.createElement('div');
+                msg1.className = 'sms-bubble received text-sm';
+                msg1.textContent = 'KALFOU: Èske lapli ap tonbe kounye a nan zòn ou a? Reponn 1 (Wi) oswa 2 (Non)';
+                chat.appendChild(msg1);
+                chat.scrollTop = chat.scrollHeight;
+            }, 1000);
+            
+            setTimeout(() => {
+                const msg2 = document.createElement('div');
+                msg2.className = 'sms-bubble text-sm';
+                msg2.textContent = '1';
+                chat.appendChild(msg2);
+                chat.scrollTop = chat.scrollHeight;
+            }, 3000);
+            
+            setTimeout(() => {
+                const msg3 = document.createElement('div');
+                msg3.className = 'sms-bubble received text-sm';
+                msg3.innerHTML = '✓ Validasyon anrejistre! +0.05 GQ<br>Balans: 5.05 GQ<br>Pwochen kesyon: 14:30';
+                chat.appendChild(msg3);
+                chat.scrollTop = chat.scrollHeight;
+                balance.textContent = '5.05 GQ';
+            }, 5000);
+        }
+
+        function showBusiness() {
+            document.getElementById('biznis').scrollIntoView({behavior: 'smooth'});
+        }
+
+        // Init
+        window.onload = () => {
+            initGlobe();
+            animateStats();
+            createMapDots();
+            updateCalc();
+        };
+    </script>
+</body>
+</html>
