@@ -1,797 +1,521 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kalfou - La Vérité Certifiée par ceux qui la Vivent</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
-    <style>
-        body { font-family: 'Inter', sans-serif; background: #0a0a0a; color: white; overflow-x: hidden; }
-        .gradient-text { background: linear-gradient(135deg, #FFD700, #FF6B35, #FF006E); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .glass { background: rgba(255,255,255,0.05); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); }
-        .pulse-ring { animation: pulse-ring 2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite; }
-        @keyframes pulse-ring { 0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(255, 107, 53, 0.7); } 70% { transform: scale(1); box-shadow: 0 0 0 20px rgba(255, 107, 53, 0); } 100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(255, 107, 53, 0); } }
-        .slide-up { animation: slideUp 0.6s ease-out; }
-        @keyframes slideUp { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-        .float { animation: float 3s ease-in-out infinite; }
-        @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-20px); } }
-        .glow { box-shadow: 0 0 40px rgba(255, 107, 53, 0.3); }
-        #globe-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; opacity: 0.4; }
-        .stat-card { transition: all 0.3s; }
-        .stat-card:hover { transform: translateY(-5px); box-shadow: 0 20px 40px rgba(255, 107, 53, 0.2); }
-        .phone-mockup { box-shadow: 0 0 60px rgba(255, 107, 53, 0.4); }
-    </style>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>ColorHarmony Pro - 60-30-10 Generator</title>
+   <script src="https://cdn.tailwindcss.com"></script>
+   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+   <style>
+       body {
+           font-family: 'Space Grotesk', sans-serif;
+           background: #0a0a0a;
+           color: #fff;
+       }
+       .font-mono { font-family: 'JetBrains Mono', monospace; }
+       
+       .color-card { transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+       .color-card:hover { transform: translateY(-4px); }
+       .preview-section { transition: background-color 0.6s ease; }
+       
+       .grain {
+           position: fixed;
+           top: 0; left: 0; width: 100%; height: 100%;
+           pointer-events: none; z-index: 50; opacity: 0.03;
+           background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+       }
+       
+       .btn-shine { position: relative; overflow: hidden; }
+       .btn-shine::after {
+           content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+           background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.3) 50%, rgba(255,255,255,0) 100%);
+           transform: rotate(30deg) translateX(-100%); transition: transform 0.6s;
+       }
+       .btn-shine:hover::after { transform: rotate(30deg) translateX(100%); }
+       
+       .lock-btn { transition: all 0.2s ease; }
+       .lock-btn.locked { background: rgba(255,255,255,0.2); color: #fff; }
+       .lock-btn.locked svg { fill: currentColor; }
+       
+       .tab-btn { transition: all 0.3s ease; border-bottom: 2px solid transparent; }
+       .tab-btn.active { border-bottom-color: #fff; color: #fff; }
+       
+       .toast {
+           position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%) translateY(100%);
+           padding: 0.75rem 1.5rem; background: #fff; color: #000; border-radius: 9999px;
+           font-weight: 500; opacity: 0; pointer-events: none; z-index: 100;
+           box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
+       }
+       .toast.show { animation: toastSlide 0.3s ease forwards; }
+       @keyframes toastSlide {
+           to { transform: translateX(-50%) translateY(0); opacity: 1; }
+       }
+       
+       select {
+           appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='white'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+           background-repeat: no-repeat; background-position: right 0.5rem center; background-size: 1.5em;
+       }
+   </style>
 </head>
-<body class="min-h-screen">
+<body class="min-h-screen overflow-x-hidden">
+   <div class="grain"></div>
+   
+   <header class="relative z-10 border-b border-white/10 backdrop-blur-md bg-black/20">
+       <div class="max-w-7xl mx-auto px-6 py-6 flex flex-col md:flex-row justify-between items-center gap-4">
+           <div class="flex items-center gap-3">
+               <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-pink-500 via-purple-500 to-cyan-500 flex items-center justify-center">
+                   <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"></path>
+                   </svg>
+               </div>
+               <div>
+                   <h1 class="text-2xl font-bold tracking-tight">ColorHarmony Pro</h1>
+                   <p class="text-xs text-white/50 uppercase tracking-widest">60-30-10 Rule Engine</p>
+               </div>
+           </div>
+           
+           <div class="flex items-center gap-4">
+               <select id="harmony-select" class="bg-white/5 border border-white/10 rounded-full px-4 py-2 text-sm focus:outline-none focus:border-white/30 pr-10">
+                   <option value="analogous">Analogue</option>
+                   <option value="complementary">Complémentaire</option>
+                   <option value="splitComplementary" selected>Split-Complémentaire</option>
+                   <option value="monochromatic">Monochromatique</option>
+               </select>
+               
+               <button onclick="generatePalette()" class="btn-shine group relative px-8 py-3 bg-white text-black rounded-full font-semibold hover:scale-105 transition-transform flex items-center gap-2">
+                   <svg class="w-5 h-5 group-hover:rotate-180 transition-transform duration-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                   </svg>
+                   Randomize
+               </button>
+           </div>
+       </div>
+   </header>
 
-    <!-- Globe 3D Background -->
-    <div id="globe-container"></div>
+   <main class="relative z-10 max-w-7xl mx-auto px-6 py-12 space-y-12">
+       
+       <section class="space-y-6">
+           <div class="flex items-center justify-between flex-wrap gap-4">
+               <h2 class="text-xl font-light text-white/80">Aperçu visuel <span class="text-white/40 text-sm ml-2">Règle 60-30-10</span></h2>
+               <div class="flex gap-4 text-sm text-white/40">
+                   <span class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-white/60"></span>60% Dominant</span>
+                   <span class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-white/40"></span>30% Secondaire</span>
+                   <span class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-white/20"></span>10% Accent</span>
+               </div>
+           </div>
+           
+           <div class="rounded-3xl overflow-hidden shadow-2xl border border-white/10">
+               <div id="preview-dominant" class="preview-section h-64 flex items-center justify-center relative">
+                   <div class="text-center space-y-4 p-8">
+                       <h3 class="text-4xl font-bold tracking-tight" id="text-on-dominant">Titre Principal</h3>
+                       <p class="text-lg opacity-80 max-w-md" id="text-on-dominant-sub">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                       <button id="btn-on-dominant" class="px-6 py-2 rounded-full font-medium transition-all hover:scale-105">Action</button>
+                   </div>
+                   <span class="absolute top-6 left-6 text-xs font-mono uppercase tracking-widest opacity-50">60% Dominant</span>
+               </div>
+               
+               <div class="flex flex-col md:flex-row">
+                   <div id="preview-secondary" class="preview-section w-full md:w-[30%] h-48 flex items-center justify-center relative">
+                       <span class="text-lg font-medium" id="text-on-secondary">Sidebar</span>
+                       <span class="absolute top-4 left-4 text-xs font-mono uppercase tracking-widest opacity-50">30%</span>
+                   </div>
+                   
+                   <div id="preview-accent-container" class="preview-section w-full md:w-[70%] h-48 flex items-center justify-center gap-4 relative bg-black/5">
+                       <div class="space-y-2 text-right">
+                           <div class="h-2 w-32 bg-current rounded opacity-20"></div>
+                           <div class="h-2 w-24 bg-current rounded opacity-20"></div>
+                       </div>
+                       <button id="preview-accent" class="px-8 py-3 rounded-full font-bold text-white shadow-lg hover:shadow-xl hover:scale-105 transition-all">
+                           CTA Principal
+                       </button>
+                       <span class="absolute top-4 right-4 text-xs font-mono uppercase tracking-widest opacity-50">10% Accent</span>
+                   </div>
+               </div>
+           </div>
+       </section>
 
-    <!-- Navigation -->
-    <nav class="fixed top-0 w-full z-50 glass px-6 py-4">
-        <div class="max-w-7xl mx-auto flex justify-between items-center">
-            <div class="flex items-center gap-3">
-                <div class="w-6 h-6 lg:w-12 lg:h-12 rounded-full bg-gradient-to-br from-yellow-400 via-orange-500 to-pink-600 flex items-center justify-center font-bold text-black text-xl glow">K</div>
-                <div>
-                    <span class="text-md lg:text-2xl font-bold gradient-text tracking-tight">KALFOU</span>
-                    <p class="text-xs text-gray-400 -mt-1">Protocole de Vérification Décentralisé</p>
-                </div>
-            </div>
-            <div class="hidden md:flex gap-8 text-sm font-medium">
-                <a href="#concept" class="text-gray-300 hover:text-white transition">Le Concept</a>
-                <a href="#comment-ca-marche" class="text-gray-300 hover:text-white transition">Comment ça marche</a>
-                <a href="#gagner" class="text-gray-300 hover:text-white transition">Gagner de l'argent</a>
-                <a href="#entreprises" class="text-gray-300 hover:text-white transition">Pour les Entreprises</a>
-            </div>
-            <button onclick="ouvrirApp()" class="bg-gradient-to-r from-orange-500 to-pink-600 px-6 py-3 rounded-full font-bold hover:scale-105 transition shadow-lg">
-                Commencer
-            </button>
-        </div>
-    </nav>
+       <section class="grid grid-cols-1 md:grid-cols-3 gap-6">
+           
+           <div class="color-card group relative bg-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/10 hover:border-white/20">
+               <div class="flex justify-between items-start mb-4">
+                   <div>
+                       <p class="text-xs text-white/40 uppercase tracking-widest mb-1">60% Dominant</p>
+                       <h3 class="text-lg font-semibold">Primary</h3>
+                   </div>
+                   <div class="flex gap-2">
+                       <button onclick="toggleLock('primary')" id="lock-primary" class="lock-btn p-2 hover:bg-white/10 rounded-lg transition-colors" title="Verrouiller cette couleur">
+                           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                           </svg>
+                       </button>
+                       <span class="text-xs bg-white/10 px-2 py-1 rounded text-white/60 flex items-center">Background</span>
+                   </div>
+               </div>
+               <div id="color-primary" class="h-32 rounded-xl mb-4 shadow-inner cursor-pointer hover:scale-[1.02] transition-transform" onclick="copyColor('primary')"></div>
+               <div class="flex justify-between items-center font-mono text-sm">
+                   <span id="hex-primary" class="text-white/60">#------</span>
+                   <button onclick="copyColor('primary')" class="p-2 hover:bg-white/10 rounded-lg transition-colors">
+                       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                       </svg>
+                   </button>
+               </div>
+           </div>
 
-    <!-- Hero Section -->
-    <section class="relative pt-32 pb-20 px-6 min-h-screen flex items-center">
-        <div class="max-w-7xl mx-auto grid md:grid-cols-2 gap-16 items-center">
-            <div class="slide-up">
-                <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-orange-500/20 text-orange-400 text-sm font-semibold mb-6 border border-orange-500/30">
-                    <span class="w-2 h-2 bg-orange-400 rounded-full animate-pulse"></span>
-                    En développement • 12,847 pré-inscrits
-                </div>
-                
-                <h1 class="text-3xl md:text-7xl font-bold leading-tight mb-8">
-                    Votre téléphone<br>
-                    <span class="gradient-text">valide la réalité.</span><br>
-                    Vous touchez<br>
-                    <span class="gradient-text">de l'argent réel.</span>
-                </h1>
-                
-                <p class="text-xl text-gray-400 mb-10 leading-relaxed max-w-lg">
-                    Kalfou est le premier protocole qui transforme votre présence géographique en revenu. 
-                    5 secondes. 1 validation. 0,50 GQ = <span class="text-white font-bold">0,25 $US</span>.
-                </p>
-                
-                <div class="flex flex-wrap gap-4 mb-12">
-                    <button onclick="ouvrirApp()" class="pulse-ring bg-gradient-to-r from-orange-500 to-pink-600 px-8 py-4 rounded-full font-bold text-lg hover:scale-105 transition shadow-xl">
-                        Télécharger l'application
-                    </button>
-                    <button onclick="voirDemo()" class="glass px-8 py-4 rounded-full font-semibold hover:bg-white/10 transition flex items-center gap-2">
-                        <span class="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">▶</span>
-                        Voir la démo
-                    </button>
-                </div>
-                
-                <div class="flex items-center gap-6 text-sm">
-                    <div class="flex -space-x-3">
-                        <img src="https://i.pravatar.cc/100?img=1" class="w-10 h-10 rounded-full border-2 border-black" alt="User">
-                        <img src="https://i.pravatar.cc/100?img=2" class="w-10 h-10 rounded-full border-2 border-black" alt="User">
-                        <img src="https://i.pravatar.cc/100?img=3" class="w-10 h-10 rounded-full border-2 border-black" alt="User">
-                        <div class="w-10 h-10 rounded-full border-2 border-black bg-orange-500 flex items-center justify-center text-xs font-bold">+12k</div>
-                    </div>
-                    <p class="text-gray-400">Rejoignez les premiers validateurs</p>
-                </div>
-            </div>
-            
-            <!-- Phone Mockup with Live Demo -->
-            <div class="relative flex justify-center float">
-                <div class="phone-mockup relative w-80 h-[650px] bg-black rounded-[3rem] border-4 border-gray-800 overflow-hidden">
-                    <!-- Notch -->
-                    <div class="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-7 bg-black rounded-b-2xl z-20"></div>
-                    
-                    <!-- Screen Content -->
-                    <div class="h-full bg-gradient-to-b from-gray-900 to-black pt-12 px-4 flex flex-col">
-                        <!-- Status Bar -->
-                        <div class="flex justify-between text-xs text-gray-400 mb-6 px-2">
-                            <span>9:41</span>
-                            <div class="flex gap-1">
-                                <span>📶</span>
-                                <span>🔋</span>
-                            </div>
-                        </div>
-                        
-                        <!-- App Header -->
-                        <div class="text-center mb-6">
-                            <div class="w-16 h-16 mx-auto rounded-full bg-gradient-to-br from-yellow-400 to-pink-600 flex items-center justify-center text-2xl font-bold text-black mb-3 glow">K</div>
-                            <h3 class="font-bold text-lg">Kalfou</h3>
-                            <p class="text-xs text-gray-400">Validateur #K-78432</p>
-                        </div>
-                        
-                        <!-- Balance Card -->
-                        <div class="bg-gradient-to-r from-orange-500/20 to-pink-600/20 rounded-2xl p-4 mb-4 border border-orange-500/30">
-                            <p class="text-xs text-gray-400 mb-1">Solde disponible</p>
-                            <div class="flex justify-between items-end">
-                                <div>
-                                    <span class="text-3xl font-bold text-white" id="demo-solde">47.50</span>
-                                    <span class="text-orange-400 font-bold">GQ</span>
-                                </div>
-                                <div class="text-right">
-                                    <p class="text-xs text-gray-400">≈ $23.75 US</p>
-                                    <p class="text-xs text-gray-400">≈ 1,550 Gourdes</p>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- Live Validation -->
-                        <div class="flex-1 bg-gray-800/50 rounded-2xl p-4 overflow-hidden relative">
-                            <div class="absolute top-3 left-3 flex items-center gap-2">
-                                <span class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
-                                <span class="text-xs text-green-400 font-medium">EN DIRECT</span>
-                            </div>
-                            
-                            <div id="validation-stream" class="mt-8 space-y-3">
-                                <!-- Dynamic content inserted by JS -->
-                            </div>
-                        </div>
-                        
-                        <!-- Quick Actions -->
-                        <div class="grid grid-cols-3 gap-2 mt-4">
-                            <button class="bg-gray-800 rounded-xl p-3 text-center hover:bg-gray-700 transition">
-                                <div class="text-lg mb-1">💰</div>
-                                <div class="text-xs">Retirer</div>
-                            </button>
-                            <button class="bg-gray-800 rounded-xl p-3 text-center hover:bg-gray-700 transition">
-                                <div class="text-lg mb-1">📤</div>
-                                <div class="text-xs">Envoyer</div>
-                            </button>
-                            <button class="bg-gray-800 rounded-xl p-3 text-center hover:bg-gray-700 transition">
-                                <div class="text-lg mb-1">📊</div>
-                                <div class="text-xs">Stats</div>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Floating Elements -->
-                <div class="absolute -right-8 top-20 glass p-4 rounded-2xl slide-up max-w-[200px]" style="animation-delay: 0.3s">
-                    <div class="flex items-center gap-3 mb-2">
-                        <div class="w-10 h-10 rounded-full bg-green-500/20 flex items-center justify-center text-green-400 text-xl">✓</div>
-                        <div>
-                            <p class="text-xs text-gray-400">Validation confirmée</p>
-                            <p class="font-bold text-green-400">+0.50 GQ</p>
-                        </div>
-                    </div>
-                    <p class="text-xs text-gray-500">Il y a 12 secondes • Pétion-Ville</p>
-                </div>
-                
-                <div class="absolute -left-8 bottom-40 glass p-4 rounded-2xl slide-up" style="animation-delay: 0.6s">
-                    <p class="text-xs text-gray-400 mb-1">Validateurs actifs</p>
-                    <p class="text-2xl font-bold gradient-text">2,847</p>
-                    <p class="text-xs text-gray-500">en ce moment</p>
-                </div>
-            </div>
-        </div>
-    </section>
+           <div class="color-card group relative bg-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/10 hover:border-white/20">
+               <div class="flex justify-between items-start mb-4">
+                   <div>
+                       <p class="text-xs text-white/40 uppercase tracking-widest mb-1">30% Secondaire</p>
+                       <h3 class="text-lg font-semibold">Secondary</h3>
+                   </div>
+                   <div class="flex gap-2">
+                       <button onclick="toggleLock('secondary')" id="lock-secondary" class="lock-btn p-2 hover:bg-white/10 rounded-lg transition-colors" title="Verrouiller cette couleur">
+                           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                           </svg>
+                       </button>
+                       <span class="text-xs bg-white/10 px-2 py-1 rounded text-white/60 flex items-center">Sidebar/Card</span>
+                   </div>
+               </div>
+               <div id="color-secondary" class="h-32 rounded-xl mb-4 shadow-inner cursor-pointer hover:scale-[1.02] transition-transform" onclick="copyColor('secondary')"></div>
+               <div class="flex justify-between items-center font-mono text-sm">
+                   <span id="hex-secondary" class="text-white/60">#------</span>
+                   <button onclick="copyColor('secondary')" class="p-2 hover:bg-white/10 rounded-lg transition-colors">
+                       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                       </svg>
+                   </button>
+               </div>
+           </div>
 
-    <!-- Concept Section -->
-    <section id="concept" class="py-20 px-6 glass">
-        <div class="max-w-7xl mx-auto">
-            <div class="text-center mb-16">
-                <h2 class="text-4xl md:text-5xl font-bold mb-6">Pourquoi <span class="gradient-text">Kalfou</span> change tout</h2>
-                <p class="text-xl text-gray-400 max-w-3xl mx-auto">
-                    Dans un monde où la vérité est devenue marchandise, ceux qui la vivent au quotidien n'en ont jamais profité. Jusqu'à maintenant.
-                </p>
-            </div>
-            
-            <div class="grid md:grid-cols-3 gap-8">
-                <div class="stat-card glass rounded-2xl p-8 text-center">
-                    <div class="w-16 h-16 mx-auto rounded-2xl bg-blue-500/20 flex items-center justify-center text-3xl mb-6">🌍</div>
-                    <h3 class="text-xl font-bold mb-4">Le Problème</h3>
-                    <p class="text-gray-400 leading-relaxed">
-                        Les entreprises paient des millions pour vérifier des catastrophes, des élections, des livraisons. 
-                        Les audits prennent des semaines. Les données sont corrompues.
-                    </p>
-                </div>
-                
-                <div class="stat-card glass rounded-2xl p-8 text-center border-orange-500/30 border-2">
-                    <div class="w-16 h-16 mx-auto rounded-2xl bg-gradient-to-br from-orange-500 to-pink-600 flex items-center justify-center text-3xl mb-6">⚡</div>
-                    <h3 class="text-xl font-bold mb-4">La Solution</h3>
-                    <p class="text-gray-400 leading-relaxed">
-                        Des milliers de témoins oculaires valident en temps réel via consensus algorithmique. 
-                        15 minutes au lieu de 15 jours. Coût divisé par 100.
-                    </p>
-                </div>
-                
-                <div class="stat-card glass rounded-2xl p-8 text-center">
-                    <div class="w-16 h-16 mx-auto rounded-2xl bg-green-500/20 flex items-center justify-center text-3xl mb-6">💎</div>
-                    <h3 class="text-xl font-bold mb-4">L'Impact</h3>
-                    <p class="text-gray-400 leading-relaxed">
-                        Chaque validation crée du revenu. Chaque validation renforce la réputation. 
-                        La pauvreté devient avantage compétitif.
-                    </p>
-                </div>
-            </div>
-        </div>
-    </section>
+           <div class="color-card group relative bg-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/10 hover:border-white/20">
+               <div class="flex justify-between items-start mb-4">
+                   <div>
+                       <p class="text-xs text-white/40 uppercase tracking-widest mb-1">10% Accent</p>
+                       <h3 class="text-lg font-semibold">Accent</h3>
+                   </div>
+                   <div class="flex gap-2">
+                       <button onclick="toggleLock('accent')" id="lock-accent" class="lock-btn p-2 hover:bg-white/10 rounded-lg transition-colors" title="Verrouiller cette couleur">
+                           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                           </svg>
+                       </button>
+                       <span class="text-xs bg-white/10 px-2 py-1 rounded text-white/60 flex items-center">CTA/Highlight</span>
+                   </div>
+               </div>
+               <div id="color-accent" class="h-32 rounded-xl mb-4 shadow-inner cursor-pointer hover:scale-[1.02] transition-transform" onclick="copyColor('accent')"></div>
+               <div class="flex justify-between items-center font-mono text-sm">
+                   <span id="hex-accent" class="text-white/60">#------</span>
+                   <button onclick="copyColor('accent')" class="p-2 hover:bg-white/10 rounded-lg transition-colors">
+                       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                       </svg>
+                   </button>
+               </div>
+           </div>
+       </section>
 
-    <!-- How It Works -->
-    <section id="comment-ca-marche" class="py-20 px-6">
-        <div class="max-w-7xl mx-auto">
-            <h2 class="text-4xl md:text-5xl font-bold text-center mb-16">Comment ça marche <span class="gradient-text">en 4 étapes</span></h2>
-            
-            <div class="relative">
-                <!-- Connection Line -->
-                <div class="hidden md:block absolute top-1/2 left-0 w-full h-1 bg-gradient-to-r from-orange-500 via-pink-600 to-purple-600 -translate-y-1/2 opacity-30"></div>
-                
-                <div class="grid md:grid-cols-4 gap-8 relative">
-                    <div class="text-center group">
-                        <div class="w-20 h-20 mx-auto rounded-full bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center text-3xl font-bold mb-6 relative z-10 group-hover:scale-110 transition shadow-lg">1</div>
-                        <h3 class="text-lg font-bold mb-3">Téléchargez l'app</h3>
-                        <p class="text-sm text-gray-400">Disponible sur Android. 5 Mo seulement. Fonctionne sur les téléphones basiques.</p>
-                    </div>
-                    
-                    <div class="text-center group">
-                        <div class="w-20 h-20 mx-auto rounded-full bg-gradient-to-br from-cyan-500 to-teal-500 flex items-center justify-center text-3xl font-bold mb-6 relative z-10 group-hover:scale-110 transition shadow-lg">2</div>
-                        <h3 class="text-lg font-bold mb-3">Activez votre position</h3>
-                        <p class="text-sm text-gray-400">GPS + vérification SIM. Vous devez être physiquement là où vous validez.</p>
-                    </div>
-                    
-                    <div class="text-center group">
-                        <div class="w-20 h-20 mx-auto rounded-full bg-gradient-to-br from-orange-500 to-pink-600 flex items-center justify-center text-3xl font-bold mb-6 relative z-10 group-hover:scale-110 transition shadow-lg">3</div>
-                        <h3 class="text-lg font-bold mb-3">Validez des événements</h3>
-                        <p class="text-sm text-gray-400">Recevez des notifications : "Confirmez-vous X ?" Répondez en 5 secondes.</p>
-                    </div>
-                    
-                    <div class="text-center group">
-                        <div class="w-20 h-20 mx-auto rounded-full bg-gradient-to-br from-pink-600 to-purple-600 flex items-center justify-center text-3xl font-bold mb-6 relative z-10 group-hover:scale-110 transition shadow-lg">4</div>
-                        <h3 class="text-lg font-bold mb-3">Convertissez en cash</h3>
-                        <p class="text-sm text-gray-400">1 GQ = 0,50 $US. Transfert vers MonCash, NatCash, ou retrait physique chez un agent.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+       <section class="bg-white/5 backdrop-blur-sm rounded-2xl p-8 border border-white/10">
+           <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-6">
+               <div>
+                   <h3 class="text-xl font-semibold mb-2">Exporter la palette</h3>
+                   <p class="text-white/50 text-sm">Choisissez votre format d'export</p>
+               </div>
+               <div class="flex gap-2 bg-black/20 p-1 rounded-lg">
+                   <button onclick="setExportTab('css')" id="tab-css" class="tab-btn active px-4 py-2 rounded-md text-sm font-medium text-white/60 hover:text-white">CSS</button>
+                   <button onclick="setExportTab('tailwind')" id="tab-tailwind" class="tab-btn px-4 py-2 rounded-md text-sm font-medium text-white/60 hover:text-white">Tailwind</button>
+                   <button onclick="setExportTab('scss')" id="tab-scss" class="tab-btn px-4 py-2 rounded-md text-sm font-medium text-white/60 hover:text-white">SCSS</button>
+               </div>
+           </div>
+           
+           <div class="relative">
+               <pre id="code-preview" class="p-4 bg-black/30 rounded-xl font-mono text-sm text-white/60 overflow-x-auto min-h-[120px]"></pre>
+               <button onclick="copyExport()" class="absolute top-4 right-4 p-2 bg-white/10 hover:bg-white/20 rounded-lg transition-colors" title="Copier le code">
+                   <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path>
+                   </svg>
+               </button>
+           </div>
+       </section>
 
-    <!-- Earnings Calculator -->
-    <section id="gagner" class="py-20 px-6 glass">
-        <div class="max-w-4xl mx-auto">
-            <h2 class="text-4xl md:text-5xl font-bold text-center mb-6">Calculez vos <span class="gradient-text">revenus</span></h2>
-            <p class="text-center text-gray-400 mb-12">1 GQ = 0,50 $US = 32,68 Gourdes HTG (taux fixe)</p>
-            
-            <div class="glass rounded-3xl p-8 md:p-12">
-                <div class="grid md:grid-cols-3 gap-8 mb-8">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-400 mb-3">Validations par jour</label>
-                        <input type="range" min="1" max="50" value="10" id="calc-validations" class="w-full accent-orange-500 mb-2" oninput="calculerRevenus()">
-                        <div class="flex justify-between text-sm text-gray-500">
-                            <span>1</span>
-                            <span id="val-display" class="text-orange-400 font-bold text-lg">10</span>
-                            <span>50</span>
-                        </div>
-                    </div>
-                    
-                    <div>
-                        <label class="block text-sm font-medium text-gray-400 mb-3">Personnes recrutées</label>
-                        <input type="range" min="0" max="20" value="5" id="calc-recrues" class="w-full accent-pink-500 mb-2" oninput="calculerRevenus()">
-                        <div class="flex justify-between text-sm text-gray-500">
-                            <span>0</span>
-                            <span id="rec-display" class="text-pink-400 font-bold text-lg">5</span>
-                            <span>20</span>
-                        </div>
-                        <p class="text-xs text-gray-500 mt-2">Bonus: 10% de leurs gains</p>
-                    </div>
-                    
-                    <div>
-                        <label class="block text-sm font-medium text-gray-400 mb-3">Prix du GQ</label>
-                        <select id="calc-prix" class="w-full bg-gray-800 rounded-lg px-4 py-3 text-white border border-gray-700" onchange="calculerRevenus()">
-                            <option value="0.10">Phase 1: $0.10 (lancement)</option>
-                            <option value="0.25">Phase 2: $0.25 (scale)</option>
-                            <option value="0.50" selected>Phase 3: $0.50 (standard)</option>
-                            <option value="1.00">Phase 4: $1.00 (maturité)</option>
-                        </select>
-                    </div>
-                </div>
-                
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 pt-8 border-t border-gray-700">
-                    <div class="text-center">
-                        <p class="text-xs text-gray-500 mb-1">Par jour</p>
-                        <p class="text-2xl font-bold text-white" id="rev-jour">$1.25</p>
-                        <p class="text-xs text-orange-400" id="rev-jour-htg">82 Gdes</p>
-                    </div>
-                    <div class="text-center">
-                        <p class="text-xs text-gray-500 mb-1">Par semaine</p>
-                        <p class="text-2xl font-bold text-orange-400" id="rev-semaine">$8.75</p>
-                        <p class="text-xs text-gray-400" id="rev-semaine-htg">571 Gdes</p>
-                    </div>
-                    <div class="text-center">
-                        <p class="text-xs text-gray-500 mb-1">Par mois</p>
-                        <p class="text-2xl font-bold text-pink-400" id="rev-mois">$37.50</p>
-                        <p class="text-xs text-gray-400" id="rev-mois-htg">2,451 Gdes</p>
-                    </div>
-                    <div class="text-center bg-gradient-to-br from-orange-500/20 to-pink-600/20 rounded-xl p-3">
-                        <p class="text-xs text-gray-400 mb-1">Par an</p>
-                        <p class="text-3xl font-bold gradient-text" id="rev-an">$456</p>
-                        <p class="text-xs text-gray-300" id="rev-an-htg">29,800 Gdes</p>
-                    </div>
-                </div>
-                
-                <div class="mt-6 p-4 bg-yellow-500/10 rounded-xl border border-yellow-500/30">
-                    <p class="text-sm text-yellow-400">
-                        <span class="font-bold">💡 Exemple réel:</span> Avec 10 validations/jour et 5 recrues actives, vous touchez l'équivalent d'un salaire de fonctionnaire haïtien, sans quitter votre domicile.
-                    </p>
-                </div>
-            </div>
-        </div>
-    </section>
+       <section class="grid grid-cols-1 md:grid-cols-3 gap-6 text-center py-8 border-t border-white/10">
+           <div class="space-y-2">
+               <div class="w-12 h-12 mx-auto rounded-full bg-white/5 flex items-center justify-center mb-3">
+                   <span class="text-2xl">🎨</span>
+               </div>
+               <h4 class="font-semibold">Mathématique</h4>
+               <p class="text-sm text-white/50">Algorithmes HSL stricts basés sur la théorie des couleurs</p>
+           </div>
+           <div class="space-y-2">
+               <div class="w-12 h-12 mx-auto rounded-full bg-white/5 flex items-center justify-center mb-3">
+                   <span class="text-2xl">🔒</span>
+               </div>
+               <h4 class="font-semibold">Verrouillage</h4>
+               <p class="text-sm text-white/50">Bloquez les couleurs pour générer des harmonies contrôlées</p>
+           </div>
+           <div class="space-y-2">
+               <div class="w-12 h-12 mx-auto rounded-full bg-white/5 flex items-center justify-center mb-3">
+                   <span class="text-2xl">♿</span>
+               </div>
+               <h4 class="font-semibold">WCAG 2.1</h4>
+               <p class="text-sm text-white/50">Calcul de contraste relatif pour l'accessibilité</p>
+           </div>
+       </section>
+   </main>
 
-    <!-- For Businesses -->
-    <section id="entreprises" class="py-20 px-6">
-        <div class="max-w-7xl mx-auto">
-            <h2 class="text-4xl md:text-5xl font-bold text-center mb-6">Pour les <span class="gradient-text">Entreprises</span></h2>
-            <p class="text-center text-gray-400 mb-16 max-w-2xl mx-auto">Réduisez vos coûts de vérification de 90%. Obtenez des données en temps réel, infalsifiables.</p>
-            
-            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <div class="glass rounded-2xl p-6 hover:border-orange-500/50 transition border border-transparent">
-                    <div class="w-12 h-12 rounded-xl bg-blue-500/20 flex items-center justify-center text-2xl mb-4">🛡️</div>
-                    <h3 class="text-lg font-bold mb-2">Assurances</h3>
-                    <p class="text-sm text-gray-400 mb-4">Paiement automatique lors de catastrophes naturelles, validé par consensus local.</p>
-                    <p class="text-xs text-green-400">Économie: 85%</p>
-                </div>
-                
-                <div class="glass rounded-2xl p-6 hover:border-orange-500/50 transition border border-transparent">
-                    <div class="w-12 h-12 rounded-xl bg-green-500/20 flex items-center justify-center text-2xl mb-4">📦</div>
-                    <h3 class="text-lg font-bold mb-2">Supply Chain</h3>
-                    <p class="text-sm text-gray-400 mb-4">Certifiez l'origine éthique de vos produits avec des preuves blockchain.</p>
-                    <p class="text-xs text-green-400">Temps: 15 min vs 2 semaines</p>
-                </div>
-                
-                <div class="glass rounded-2xl p-6 hover:border-orange-500/50 transition border border-transparent">
-                    <div class="w-12 h-12 rounded-xl bg-purple-500/20 flex items-center justify-center text-2xl mb-4">🗳️</div>
-                    <h3 class="text-lg font-bold mb-2">Élections & ONG</h3>
-                    <p class="text-sm text-gray-400 mb-4">Audit décentralisé des processus électoraux et distributions d'aide.</p>
-                    <p class="text-xs text-green-400">Transparence: 100%</p>
-                </div>
-                
-                <div class="glass rounded-2xl p-6 hover:border-orange-500/50 transition border border-transparent">
-                    <div class="w-12 h-12 rounded-xl bg-orange-500/20 flex items-center justify-center text-2xl mb-4">📰</div>
-                    <h3 class="text-lg font-bold mb-2">Médias</h3>
-                    <p class="text-sm text-gray-400 mb-4">Débunking en temps réel des fake news par des témoins oculaires.</p>
-                    <p class="text-xs text-green-400">Fiabilité: 98.7%</p>
-                </div>
-                
-                <div class="glass rounded-2xl p-6 hover:border-orange-500/50 transition border border-transparent">
-                    <div class="w-12 h-12 rounded-xl bg-pink-500/20 flex items-center justify-center text-2xl mb-4">🏦</div>
-                    <h3 class="text-lg font-bold mb-2">Microfinance</h3>
-                    <p class="text-sm text-gray-400 mb-4">Scoring de crédit basé sur l'historique de validation, pas sur les garanties.</p>
-                    <p class="text-xs text-green-400">Défaut: -60%</p>
-                </div>
-                
-                <div class="glass rounded-2xl p-6 hover:border-orange-500/50 transition border border-transparent">
-                    <div class="w-12 h-12 rounded-xl bg-cyan-500/20 flex items-center justify-center text-2xl mb-4">🌐</div>
-                    <h3 class="text-lg font-bold mb-2">Gouvernements</h3>
-                    <p class="text-sm text-gray-400 mb-4">Recensement, estimation des dommages, planification d'urgence en temps réel.</p>
-                    <p class="text-xs text-green-400">Coût: -90%</p>
-                </div>
-            </div>
-            
-            <div class="mt-12 text-center">
-                <button onclick="devenirClient()" class="bg-gradient-to-r from-orange-500 to-pink-600 px-10 py-4 rounded-full font-bold text-lg hover:scale-105 transition shadow-xl">
-                    Devenir client beta →
-                </button>
-                <p class="text-sm text-gray-500 mt-4">3 places disponibles pour le programme pilote. Tarifs préférentiels garantis.</p>
-            </div>
-        </div>
-    </section>
+   <div id="toast" class="toast flex items-center gap-2">
+       <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+       </svg>
+       <span id="toast-message">Copié !</span>
+   </div>
 
-    <!-- FAQ -->
-    <section class="py-20 px-6 glass">
-        <div class="max-w-3xl mx-auto">
-            <h2 class="text-3xl font-bold text-center mb-12">Questions <span class="gradient-text">fréquentes</span></h2>
-            
-            <div class="space-y-4">
-                <details class="glass rounded-xl p-4 group">
-                    <summary class="font-semibold cursor-pointer flex justify-between items-center">
-                        Comment Kalfou garantit la véracité des validations?
-                        <span class="group-open:rotate-180 transition">▼</span>
-                    </summary>
-                    <p class="mt-4 text-gray-400 text-sm leading-relaxed">
-                        Consensus algorithmique: une validation n'est acceptée que si 67% des validateurs dans un rayon de 2km confirment la même information. 
-                        Plus le nombre de validateurs est élevé, plus la probabilité de fraude collective tend vers zéro.
-                    </p>
-                </details>
-                
-                <details class="glass rounded-xl p-4 group">
-                    <summary class="font-semibold cursor-pointer flex justify-between items-center">
-                        D'où vient l'argent pour payer les validateurs?
-                        <span class="group-open:rotate-180 transition">▼</span>
-                    </summary>
-                    <p class="mt-4 text-gray-400 text-sm leading-relaxed">
-                        Des entreprises et organisations qui paient pour des vérifications rapides et fiables. 
-                        Elles déposent des dollars ou des stablecoins, convertis en GQ au moment de la distribution.
-                        Kalfou prélève 20% de commission, 80% vont directement aux validateurs.
-                    </p>
-                </details>
-                
-                <details class="glass rounded-xl p-4 group">
-                    <summary class="font-semibold cursor-pointer flex justify-between items-center">
-                        Est-ce que le GQ est une cryptomonnaie spéculative?
-                        <span class="group-open:rotate-180 transition">▼</span>
-                    </summary>
-                    <p class="mt-4 text-gray-400 text-sm leading-relaxed">
-                        Non. Le GQ est un stablecoin indexé sur un panier de devises (50% USD, 30% HTG, 20% or). 
-                        Sa valeur est garantie par des réserves réelles, auditées mensuellement. 
-                        Objectif: stabilité maximale, pas spéculation.
-                    </p>
-                </details>
-                
-                <details class="glass rounded-xl p-4 group">
-                    <summary class="font-semibold cursor-pointer flex justify-between items-center">
-                        Que se passe-t-il si je n'ai pas de smartphone?
-                        <span class="group-open:rotate-180 transition">▼</span>
-                    </summary>
-                    <p class="mt-4 text-gray-400 text-sm leading-relaxed">
-                        Phase 1 (lancement): Android requis. Phase 2 (6 mois): version USSD (*384#) pour téléphones basiques. 
-                        Phase 3 (12 mois): intégration SMS avec Digicel/Natcom pour couverture universelle.
-                    </p>
-                </details>
-            </div>
-        </div>
-    </section>
+   <script>
+       // State
+       let currentPalette = { primary: '', secondary: '', accent: '' };
+       let lockedColors = { primary: false, secondary: false, accent: false };
+       let currentExportTab = 'css';
+       let toastTimeout = null;
 
-    <!-- CTA Final -->
-    <section class="py-20 px-6 text-center">
-        <div class="max-w-3xl mx-auto">
-            <h2 class="text-5xl font-bold mb-6">L'avenir de la <span class="gradient-text">vérité</span> commence en Haïti</h2>
-            <p class="text-xl text-gray-400 mb-10">
-                12,847 personnes attendent. Les premiers contrats enterprise sont signés. 
-                <br>Ne manquez pas le lancement.
-            </p>
-            
-            <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                <button onclick="ouvrirApp()" class="pulse-ring bg-gradient-to-r from-orange-500 to-pink-600 px-10 py-5 rounded-full font-bold text-xl hover:scale-105 transition shadow-2xl">
-                    Rejoindre la liste d'attente
-                </button>
-                <button onclick="document.getElementById('entreprises').scrollIntoView({behavior: 'smooth'})" class="glass px-10 py-5 rounded-full font-semibold hover:bg-white/10 transition">
-                    Je suis une entreprise
-                </button>
-            </div>
-            
-            <p class="text-sm text-gray-500 mt-8">Lancement officiel: Q1 2025 • Places limitées: 5,000 premiers validateurs</p>
-        </div>
-    </section>
+       // Color Harmonies Algorithms
+       const ColorHarmonies = {
+           analogous: (baseHue) => ({
+               dominant:  { h: baseHue, s: 15, l: 95 },
+               secondary: { h: (baseHue + 30) % 360, s: 35, l: 40 },
+               accent:    { h: (baseHue + 60) % 360, s: 85, l: 50 }
+           }),
+           complementary: (baseHue) => ({
+               dominant:  { h: baseHue, s: 20, l: 90 },
+               secondary: { h: baseHue, s: 40, l: 25 },
+               accent:    { h: (baseHue + 180) % 360, s: 90, l: 50 }
+           }),
+           splitComplementary: (baseHue) => ({
+               dominant:  { h: baseHue, s: 15, l: 92 },
+               secondary: { h: (baseHue + 150) % 360, s: 50, l: 45 },
+               accent:    { h: (baseHue + 210) % 360, s: 85, l: 55 }
+           }),
+           monochromatic: (baseHue) => ({
+               dominant:  { h: baseHue, s: 10, l: 96 },
+               secondary: { h: baseHue, s: 25, l: 75 },
+               accent:    { h: baseHue, s: 80, l: 35 }
+           })
+       };
 
-    <!-- Footer -->
-    <footer class="py-12 px-6 border-t border-gray-800">
-        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
-            <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-full bg-gradient-to-br from-yellow-400 to-pink-600 flex items-center justify-center font-bold text-black">K</div>
-                <div>
-                    <span class="font-bold text-lg">Kalfou Protocol</span>
-                    <p class="text-xs text-gray-500">Powered by Solana • Audité par CertiK</p>
-                </div>
-            </div>
-            
-            <div class="flex gap-8 text-sm text-gray-400">
-                <a href="#" class="hover:text-white transition">Whitepaper</a>
-                <a href="#" class="hover:text-white transition">Smart Contract</a>
-                <a href="#" class="hover:text-white transition">API Documentation</a>
-                <a href="#" class="hover:text-white transition">Contact</a>
-            </div>
-            
-            <div class="flex gap-4">
-                <a href="#" class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-gray-700 transition">𝕏</a>
-                <a href="#" class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-gray-700 transition">📘</a>
-                <a href="#" class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-gray-700 transition">💬</a>
-            </div>
-        </div>
-        
-        <div class="max-w-7xl mx-auto mt-8 pt-8 border-t border-gray-800 text-center text-xs text-gray-600">
-            <p>© 2024 Kalfou Protocol. Tous droits réservés. • Kalfou n'est pas une banque. Le GQ n'est pas une garantie d'investissement.</p>
-            <p class="mt-2">Conçu à Port-au-Prince • Déployé sur Solana • Propriété de la communauté</p>
-        </div>
-    </footer>
+       // HSL to HEX conversion
+       function hslToHex(h, s, l) {
+           l /= 100;
+           const a = s * Math.min(l, 1 - l) / 100;
+           const f = n => {
+               const k = (n + h / 30) % 12;
+               const color = l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
+               return Math.round(255 * color).toString(16).padStart(2, '0');
+           };
+           return `#${f(0)}${f(8)}${f(4)}`.toUpperCase();
+       }
 
-    <!-- Modal Application -->
-    <div id="modal-app" class="fixed inset-0 z-50 hidden bg-black/95 flex items-center justify-center p-4">
-        <div class="glass rounded-3xl max-w-md w-full p-8 relative border border-orange-500/30">
-            <button onclick="fermerApp()" class="absolute top-4 right-4 text-gray-400 hover:text-white text-2xl">×</button>
-            
-            <div class="text-center mb-8">
-                <div class="w-20 h-20 mx-auto rounded-full bg-gradient-to-br from-yellow-400 to-pink-600 flex items-center justify-center text-3xl font-bold text-black mb-4 glow">K</div>
-                <h3 class="text-2xl font-bold">Rejoindre Kalfou</h3>
-                <p class="text-sm text-gray-400 mt-2">Étape <span id="etape-numero">1</span> sur 3</p>
-            </div>
-            
-            <!-- Étape 1: Téléphone -->
-            <div id="etape-1">
-                <label class="block text-sm font-medium text-gray-400 mb-3">Numéro de téléphone</label>
-                <div class="flex gap-2 mb-6">
-                    <span class="bg-gray-800 px-4 py-3 rounded-l-lg text-gray-400 font-medium">+509</span>
-                    <input type="tel" id="input-telephone" placeholder="34 56 78 90" class="flex-1 bg-gray-800 px-4 py-3 rounded-r-lg text-white border border-gray-700 focus:border-orange-500 outline-none">
-                </div>
-                
-                <div class="flex items-center gap-3 mb-6 p-4 bg-yellow-500/10 rounded-xl">
-                    <span class="text-2xl">🎁</span>
-                    <div>
-                        <p class="text-sm font-medium text-yellow-400">Bonus de lancement</p>
-                        <p class="text-xs text-gray-400">5 GQ offerts = $2.50 US</p>
-                    </div>
-                </div>
-                
-                <button onclick="envoyerCode()" class="w-full py-4 rounded-full bg-gradient-to-r from-orange-500 to-pink-600 font-bold hover:scale-105 transition">
-                    Recevoir le code par SMS
-                </button>
-            </div>
-            
-            <!-- Étape 2: Vérification -->
-            <div id="etape-2" class="hidden">
-                <label class="block text-sm font-medium text-gray-400 mb-3">Code de vérification</label>
-                <div class="flex gap-3 justify-center mb-6">
-                    <input type="text" maxlength="1" class="w-14 h-14 bg-gray-800 rounded-lg text-center text-2xl font-bold border border-gray-700 focus:border-orange-500 outline-none" onkeyup="focusNext(this, 0)">
-                    <input type="text" maxlength="1" class="w-14 h-14 bg-gray-800 rounded-lg text-center text-2xl font-bold border border-gray-700 focus:border-orange-500 outline-none" onkeyup="focusNext(this, 1)">
-                    <input type="text" maxlength="1" class="w-14 h-14 bg-gray-800 rounded-lg text-center text-2xl font-bold border border-gray-700 focus:border-orange-500 outline-none" onkeyup="focusNext(this, 2)">
-                    <input type="text" maxlength="1" class="w-14 h-14 bg-gray-800 rounded-lg text-center text-2xl font-bold border border-gray-700 focus:border-orange-500 outline-none" onkeyup="verifierCode()">
-                </div>
-                <p class="text-center text-sm text-gray-500 mb-6">Code envoyé au <span id="numero-affiche"></span></p>
-                
-                <button onclick="verifierCode()" class="w-full py-4 rounded-full bg-gradient-to-r from-orange-500 to-pink-600 font-bold hover:scale-105 transition">
-                    Vérifier
-                </button>
-                <button onclick="retourEtape1()" class="w-full mt-3 text-sm text-gray-500 hover:text-white">
-                    Modifier le numéro
-                </button>
-            </div>
-            
-            <!-- Étape 3: Succès -->
-            <div id="etape-3" class="hidden text-center">
-                <div class="text-6xl mb-4 animate-bounce">🎉</div>
-                <h4 class="text-2xl font-bold mb-2">Bienvenue dans Kalfou!</h4>
-                <p class="text-gray-400 mb-6">Vous êtes maintenant validateur #<span id="id-validateur" class="text-orange-400 font-bold"></span></p>
-                
-                <div class="bg-gradient-to-r from-orange-500/20 to-pink-600/20 rounded-2xl p-6 mb-6 border border-orange-500/30">
-                    <p class="text-sm text-gray-400 mb-2">Solde initial crédité</p>
-                    <div class="text-4xl font-bold text-white mb-1">5.00 <span class="text-orange-400">GQ</span></div>
-                    <p class="text-sm text-gray-400">≈ $2.50 US • ≈ 163 Gourdes</p>
-                </div>
-                
-                <div class="space-y-3 mb-6">
-                    <div class="flex items-center gap-3 text-sm text-gray-400">
-                        <span class="w-6 h-6 rounded-full bg-green-500/20 flex items-center justify-center text-green-400 text-xs">✓</span>
-                        Application en cours de développement
-                    </div>
-                    <div class="flex items-center gap-3 text-sm text-gray-400">
-                        <span class="w-6 h-6 rounded-full bg-green-500/20 flex items-center justify-center text-green-400 text-xs">✓</span>
-                        Notification par SMS au lancement
-                    </div>
-                    <div class="flex items-center gap-3 text-sm text-gray-400">
-                        <span class="w-6 h-6 rounded-full bg-yellow-500/20 flex items-center justify-center text-yellow-400 text-xs">!</span>
-                        Position dans la file d'attente: <span class="text-white font-bold" id="position-file">#847</span>
-                    </div>
-                </div>
-                
-                <button onclick="fermerApp()" class="w-full py-4 rounded-full bg-green-600 font-bold hover:bg-green-500 transition">
-                    Parfait, j'ai compris
-                </button>
-            </div>
-        </div>
-    </div>
+       // WCAG 2.1 Relative Luminance
+       function getRelativeLuminance(hex) {
+           const rgb = hex.replace('#', '').match(/.{2}/g).map(x => {
+               const v = parseInt(x, 16) / 255;
+               return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4);
+           });
+           return 0.2126 * rgb[0] + 0.7152 * rgb[1] + 0.0722 * rgb[2];
+       }
 
-    <script>
-        // Globe 3D Animation
-        function initGlobe() {
-            const scene = new THREE.Scene();
-            const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-            const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
-            renderer.setSize(window.innerWidth, window.innerHeight);
-            document.getElementById('globe-container').appendChild(renderer.domElement);
+       function getContrastRatio(hex1, hex2) {
+           const l1 = getRelativeLuminance(hex1);
+           const l2 = getRelativeLuminance(hex2);
+           const lighter = Math.max(l1, l2);
+           const darker = Math.min(l1, l2);
+           return (lighter + 0.05) / (darker + 0.05);
+       }
 
-            // Création du globe filaire
-            const geometry = new THREE.IcosahedronGeometry(6, 2);
-            const material = new THREE.MeshBasicMaterial({ 
-                color: 0xFF6B35, 
-                wireframe: true,
-                transparent: true,
-                opacity: 0.15
-            });
-            const globe = new THREE.Mesh(geometry, material);
-            scene.add(globe);
+       function getAccessibleTextColor(bgHex) {
+           const whiteContrast = getContrastRatio(bgHex, '#FFFFFF');
+           const blackContrast = getContrastRatio(bgHex, '#000000');
+           return whiteContrast >= blackContrast ? '#FFFFFF' : '#000000';
+       }
 
-            // Points pour Haïti et connexions
-            const pointsGeometry = new THREE.BufferGeometry();
-            const pointsCount = 100;
-            const positions = new Float32Array(pointsCount * 3);
-            
-            for(let i = 0; i < pointsCount; i++) {
-                const phi = Math.acos(-1 + (2 * i) / pointsCount);
-                const theta = Math.sqrt(pointsCount * Math.PI) * phi;
-                positions[i * 3] = 6.2 * Math.cos(theta) * Math.sin(phi);
-                positions[i * 3 + 1] = 6.2 * Math.sin(theta) * Math.sin(phi);
-                positions[i * 3 + 2] = 6.2 * Math.cos(phi);
-            }
-            
-            pointsGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-            const pointsMaterial = new THREE.PointsMaterial({ 
-                color: 0xFFD700, 
-                size: 0.08,
-                transparent: true,
-                opacity: 0.6
-            });
-            const points = new THREE.Points(pointsGeometry, pointsMaterial);
-            globe.add(points);
+       // Clipboard with fallback
+       async function copyToClipboard(text) {
+           try {
+               if (navigator.clipboard && window.isSecureContext) {
+                   await navigator.clipboard.writeText(text);
+               } else {
+                   const textArea = document.createElement('textarea');
+                   textArea.value = text;
+                   textArea.style.position = 'fixed';
+                   textArea.style.left = '-9999px';
+                   document.body.appendChild(textArea);
+                   textArea.focus();
+                   textArea.select();
+                   document.execCommand('copy');
+                   document.body.removeChild(textArea);
+               }
+               return true;
+           } catch (err) {
+               console.error('Copy failed:', err);
+               return false;
+           }
+       }
 
-            // Lignes de connexion (data flow)
-            const lineMaterial = new THREE.LineBasicMaterial({ 
-                color: 0xFF006E, 
-                transparent: true, 
-                opacity: 0.1 
-            });
+       // Toast with debounce
+       function showToast(message) {
+           const toast = document.getElementById('toast');
+           const toastMessage = document.getElementById('toast-message');
+           
+           if (toastTimeout) clearTimeout(toastTimeout);
+           
+           toastMessage.textContent = message;
+           toast.classList.remove('show');
+           void toast.offsetWidth; // Force reflow
+           toast.classList.add('show');
+           
+           toastTimeout = setTimeout(() => {
+               toast.classList.remove('show');
+           }, 2000);
+       }
 
-            camera.position.z = 15;
+       // Lock/Unlock colors
+       function toggleLock(colorType) {
+           lockedColors[colorType] = !lockedColors[colorType];
+           const btn = document.getElementById(`lock-${colorType}`);
+           if (lockedColors[colorType]) {
+               btn.classList.add('locked');
+               btn.innerHTML = `<svg class="w-4 h-4" fill="currentColor" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>`;
+           } else {
+               btn.classList.remove('locked');
+               btn.innerHTML = `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>`;
+           }
+       }
 
-            function animate() {
-                requestAnimationFrame(animate);
-                globe.rotation.y += 0.001;
-                globe.rotation.x += 0.0005;
-                points.rotation.y -= 0.002;
-                renderer.render(scene, camera);
-            }
-            animate();
+       // Generate palette
+       function generatePalette() {
+           const harmonyType = document.getElementById('harmony-select').value;
+           const baseHue = Math.floor(Math.random() * 360);
+           const palette = ColorHarmonies[harmonyType](baseHue);
+           
+           if (!lockedColors.primary) {
+               currentPalette.primary = hslToHex(palette.dominant.h, palette.dominant.s, palette.dominant.l);
+           }
+           if (!lockedColors.secondary) {
+               currentPalette.secondary = hslToHex(palette.secondary.h, palette.secondary.s, palette.secondary.l);
+           }
+           if (!lockedColors.accent) {
+               currentPalette.accent = hslToHex(palette.accent.h, palette.accent.s, palette.accent.l);
+           }
+           
+           updateUI();
+       }
 
-            window.addEventListener('resize', () => {
-                camera.aspect = window.innerWidth / window.innerHeight;
-                camera.updateProjectionMatrix();
-                renderer.setSize(window.innerWidth, window.innerHeight);
-            });
-        }
+       // Update UI
+       function updateUI() {
+           const { primary, secondary, accent } = currentPalette;
+           
+           document.getElementById('color-primary').style.backgroundColor = primary;
+           document.getElementById('hex-primary').textContent = primary;
+           
+           document.getElementById('color-secondary').style.backgroundColor = secondary;
+           document.getElementById('hex-secondary').textContent = secondary;
+           
+           document.getElementById('color-accent').style.backgroundColor = accent;
+           document.getElementById('hex-accent').textContent = accent;
+           
+           document.getElementById('preview-dominant').style.backgroundColor = primary;
+           document.getElementById('preview-secondary').style.backgroundColor = secondary;
+           document.getElementById('preview-accent').style.backgroundColor = accent;
+           
+           const primaryText = getAccessibleTextColor(primary);
+           const secondaryText = getAccessibleTextColor(secondary);
+           const accentText = getAccessibleTextColor(accent);
+           
+           document.getElementById('text-on-dominant').style.color = primaryText;
+           document.getElementById('text-on-dominant-sub').style.color = primaryText;
+           document.getElementById('btn-on-dominant').style.backgroundColor = secondary;
+           document.getElementById('btn-on-dominant').style.color = secondaryText;
+           
+           document.getElementById('text-on-secondary').style.color = secondaryText;
+           document.getElementById('preview-accent-container').style.color = primaryText;
+           document.getElementById('preview-accent').style.color = accentText;
+           
+           updateExportPreview();
+       }
 
-        // Stream de validations en direct (simulation)
-        function initValidationStream() {
-            const container = document.getElementById('validation-stream');
-            const validations = [
-                { type: 'Météo', desc: 'Pluie confirmée', zone: 'Pétion-Ville', gain: 0.50 },
-                { type: 'Trafic', desc: 'Accident routier', zone: 'Delmas', gain: 0.75 },
-                { type: 'Marché', desc: 'Prix du riz', zone: 'Croix-des-Bouquets', gain: 0.50 },
-                { type: 'Sécurité', desc: 'Manifestation', zone: 'Cap-Haïtien', gain: 1.00 },
-                { type: 'Inondation', desc: 'Niveau d\'eau', zone: 'Gonaïves', gain: 2.00 }
-            ];
+       // Export tabs
+       function setExportTab(tab) {
+           currentExportTab = tab;
+           document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+           document.getElementById(`tab-${tab}`).classList.add('active');
+           updateExportPreview();
+       }
 
-            function addValidation() {
-                const v = validations[Math.floor(Math.random() * validations.length)];
-                const div = document.createElement('div');
-                div.className = 'flex items-center justify-between p-3 bg-gray-700/50 rounded-xl slide-up';
-                div.innerHTML = `
-                    <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-orange-500 to-pink-600 flex items-center justify-center text-xs font-bold">
-                            ${v.type[0]}
-                        </div>
-                        <div>
-                            <p class="text-sm font-medium">${v.desc}</p>
-                            <p class="text-xs text-gray-500">${v.zone} • Il y a ${Math.floor(Math.random() * 59) + 1}s</p>
-                        </div>
-                    </div>
-                    <div class="text-right">
-                        <p class="text-sm font-bold text-green-400">+${v.gain.toFixed(2)}</p>
-                        <p class="text-xs text-gray-500">GQ</p>
-                    </div>
-                `;
-                container.insertBefore(div, container.firstChild);
-                if (container.children.length > 4) container.lastChild.remove();
-                
-                // Mise à jour solde
-                const solde = document.getElementById('demo-solde');
-                let current = parseFloat(solde.textContent);
-                solde.textContent = (current + v.gain).toFixed(2);
-            }
+       function updateExportPreview() {
+           const { primary, secondary, accent } = currentPalette;
+           const preview = document.getElementById('code-preview');
+           
+           switch(currentExportTab) {
+               case 'css':
+                   preview.textContent = `:root {
+ --color-primary: ${primary};   /* 60% - Dominant */
+ --color-secondary: ${secondary}; /* 30% - Secondaire */
+ --color-accent: ${accent};    /* 10% - Accent */
+}`;
+                   break;
+               case 'tailwind':
+                   preview.textContent = `// tailwind.config.js
+module.exports = {
+ theme: {
+   extend: {
+     colors: {
+       primary: '${primary}',      // 60% - Dominant
+       secondary: '${secondary}',  // 30% - Secondaire
+       accent: '${accent}',        // 10% - Accent
+     }
+   }
+ }
+}`;
+                   break;
+               case 'scss':
+                   preview.textContent = `$color-primary: ${primary};   // 60% - Dominant
+$color-secondary: ${secondary}; // 30% - Secondaire
+$color-accent: ${accent};    // 10% - Accent
 
-            setInterval(addValidation, 3000);
-            addValidation();
-        }
+:root {
+ --color-primary: #{$color-primary};
+ --color-secondary: #{$color-secondary};
+ --color-accent: #{$color-accent};
+}`;
+                   break;
+           }
+       }
 
-        // Calculateur de revenus
-        function calculerRevenus() {
-            const validations = parseInt(document.getElementById('calc-validations').value);
-            const recrues = parseInt(document.getElementById('calc-recrues').value);
-            const prix = parseFloat(document.getElementById('calc-prix').value);
-            
-            document.getElementById('val-display').textContent = validations;
-            document.getElementById('rec-display').textContent = recrues;
-            
-            // Calcul: validations personnelles + 10% des recrues
-            const totalQuotidien = validations + (recrues * validations * 0.1);
-            const gainJour = totalQuotidien * 0.5 * prix; // 0.5 GQ par validation moyenne
-            const gainSemaine = gainJour * 7;
-            const gainMois = gainJour * 30;
-            const gainAn = gainJour * 365;
-            
-            // Taux approximatif
-            const tauxHTG = 65; // 1$ = 65 Gdes
-            
-            document.getElementById('rev-jour').textContent = '$' + gainJour.toFixed(2);
-            document.getElementById('rev-jour-htg').textContent = Math.round(gainJour * tauxHTG) + ' Gdes';
-            
-            document.getElementById('rev-semaine').textContent = '$' + gainSemaine.toFixed(2);
-            document.getElementById('rev-semaine-htg').textContent = Math.round(gainSemaine * tauxHTG) + ' Gdes';
-            
-            document.getElementById('rev-mois').textContent = '$' + gainMois.toFixed(2);
-            document.getElementById('rev-mois-htg').textContent = Math.round(gainMois * tauxHTG) + ' Gdes';
-            
-            document.getElementById('rev-an').textContent = '$' + gainAn.toFixed(0);
-            document.getElementById('rev-an-htg').textContent = Math.round(gainAn * tauxHTG).toLocaleString() + ' Gdes';
-        }
+       // Copy functions
+       async function copyColor(type) {
+           const name = type === 'primary' ? 'Primary (60%)' : type === 'secondary' ? 'Secondary (30%)' : 'Accent (10%)';
+           const success = await copyToClipboard(`${name}: ${currentPalette[type]}`);
+           if (success) showToast(`${name} copié !`);
+       }
 
-        // Gestion du modal
-        function ouvrirApp() {
-            document.getElementById('modal-app').classList.remove('hidden');
-            document.body.style.overflow = 'hidden';
-        }
+       async function copyExport() {
+           const code = document.getElementById('code-preview').textContent;
+           const success = await copyToClipboard(code);
+           if (success) showToast('Code copié !');
+       }
 
-        function fermerApp() {
-            document.getElementById('modal-app').classList.add('hidden');
-            document.body.style.overflow = '';
-            // Reset
-            document.getElementById('etape-1').classList.remove('hidden');
-            document.getElementById('etape-2').classList.add('hidden');
-            document.getElementById('etape-3').classList.add('hidden');
-            document.getElementById('etape-numero').textContent = '1';
-        }
+       // Event listeners
+       document.getElementById('harmony-select').addEventListener('change', generatePalette);
+       
+       document.addEventListener('keydown', (e) => {
+           if (e.code === 'Space' && e.target === document.body) {
+               e.preventDefault();
+               generatePalette();
+           }
+       });
 
-        function envoyerCode() {
-            const tel = document.getElementById('input-telephone').value;
-            if (tel.length < 8) {
-                alert('Veuillez entrer un numéro valide');
-                return;
-            }
-            document.getElementById('numero-affiche').textContent = '+509 ' + tel;
-            document.getElementById('etape-1').classList.add('hidden');
-            document.getElementById('etape-2').classList.remove('hidden');
-            document.getElementById('etape-numero').textContent = '2';
-        }
-
-        function retourEtape1() {
-            document.getElementById('etape-2').classList.add('hidden');
-            document.getElementById('etape-1').classList.remove('hidden');
-            document.getElementById('etape-numero').textContent = '1';
-        }
-
-        function focusNext(input, index) {
-            if (input.value.length === 1) {
-                const inputs = input.parentElement.querySelectorAll('input');
-                if (index < 3) inputs[index + 1].focus();
-            }
-        }
-
-        function verifierCode() {
-            document.getElementById('etape-2').classList.add('hidden');
-            document.getElementById('etape-3').classList.remove('hidden');
-            document.getElementById('etape-numero').textContent = '3';
-            document.getElementById('id-validateur').textContent = 'K-' + Math.floor(10000 + Math.random() * 90000);
-            document.getElementById('position-file').textContent = '#' + Math.floor(800 + Math.random() * 200);
-        }
-
-        function voirDemo() {
-            ouvrirApp();
-        }
-
-        function devenirClient() {
-            alert('Formulaire de contact entreprise à venir. Email temporaire: enterprise@kalfou.protocol');
-        }
-
-        // Initialisation
-        window.onload = () => {
-            initGlobe();
-            initValidationStream();
-            calculerRevenus();
-        };
-    </script>
+       // Initialize
+       window.addEventListener('DOMContentLoaded', () => {
+           generatePalette();
+       });
+   </script>
 </body>
 </html>
