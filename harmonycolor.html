@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ColorHarmony - Générateur 60-30-10 Pro</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            background: #0a0a0a;
+            color: #fff;
+        }
+        .color-card { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .color-card:hover { transform: translateY(-2px); }
+        .preview-section { transition: background-color 0.4s ease, color 0.4s ease; }
+        
+        .copy-toast { animation: slideUp 0.3s ease forwards; }
+        .toast-hide { animation: slideDown 0.3s ease forwards; }
+        
+        @keyframes slideUp {
+            from { transform: translate(-50%, 100%); opacity: 0; }
+            to { transform: translate(-50%, 0); opacity: 1; }
+        }
+        @keyframes slideDown {
+            from { transform: translate(-50%, 0); opacity: 1; }
+            to { transform: translate(-50%, 100%); opacity: 0; }
+        }
+        
+        .grain {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; z-index: 50; opacity: 0.03;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+        }
+        
+        .locked svg path { fill: currentColor; }
+    </style>
+</head>
+<body class="min-h-screen overflow-x-hidden">
+    <div class="grain"></div>
+    
+    <header class="relative z-10 border-b border-white/10 backdrop-blur-md bg-black/40 sticky top-0">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex flex-col md:flex-row justify-between items-center gap-4">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-cyan-500 flex items-center justify-center">
+                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"></path>
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold tracking-tight">ColorHarmony</h1>
+                    <p class="text-[10px] text-white/50 uppercase tracking-widest">WCAG 2.1 Compliant</p>
+                </div>
+            </div>
+            
+            <div class="flex items-center gap-4 w-full md:w-auto">
+                <select id="harmony-type" class="bg-white/10 border border-white/20 text-white text-sm rounded-lg focus:ring-cyan-500 focus:border-cyan-500 block p-2.5 outline-none">
+                    <option value="splitComplementary">Split-Complémentaire</option>
+                    <option value="complementary">Complémentaire</option>
+                    <option value="analogous">Analogue</option>
+                    <option value="monochromatic">Monochromatique</option>
+                </select>
+                <button onclick="generatePalette()" class="px-6 py-2.5 bg-white text-black rounded-lg font-semibold hover:bg-gray-200 transition-colors flex items-center gap-2 flex-1 md:flex-none justify-center">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                    </svg>
+                    Générer (Espace)
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="relative z-10 max-w-7xl mx-auto px-6 py-8 space-y-8">
+        
+        <section class="rounded-2xl overflow-hidden border border-white/10 shadow-2xl flex flex-col md:flex-row h-auto md:h-96">
+            <div id="preview-dominant" class="preview-section w-full md:w-[60%] p-8 md:p-12 flex flex-col justify-between relative">
+                <span class="text-xs font-mono uppercase tracking-widest opacity-60">60% Dominant (Fond)</span>
+                <div class="space-y-4 max-w-lg mt-8 md:mt-0">
+                    <h2 class="text-4xl md:text-5xl font-bold tracking-tight leading-tight" id="text-on-dominant">Interface Équilibrée</h2>
+                    <p class="text-lg opacity-80" id="subtext-on-dominant">L'harmonie chromatique est générée mathématiquement pour garantir un contraste optimal selon les normes WCAG 2.1.</p>
+                </div>
+            </div>
+            
+            <div class="w-full md:w-[40%] flex flex-col">
+                <div id="preview-secondary" class="preview-section h-1/2 p-6 md:p-8 flex flex-col justify-between relative border-t md:border-t-0 md:border-l border-white/10">
+                    <span class="text-xs font-mono uppercase tracking-widest opacity-60">30% Secondaire (Cartes/Sidebar)</span>
+                    <div class="space-y-3 mt-4">
+                        <div class="h-3 w-3/4 rounded bg-current opacity-20"></div>
+                        <div class="h-3 w-1/2 rounded bg-current opacity-20"></div>
+                    </div>
+                </div>
+                
+                <div id="preview-accent-container" class="h-1/2 p-6 md:p-8 flex flex-col justify-center items-center relative border-t border-white/10 bg-black/20">
+                    <span class="absolute top-4 left-6 text-xs font-mono uppercase tracking-widest opacity-60 text-white">10% Accent (Action)</span>
+                    <button id="preview-accent" class="preview-section px-8 py-4 rounded-xl font-bold shadow-lg hover:-translate-y-1 transition-transform w-full md:w-auto">
+                        Call to Action
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="bg-white/5 backdrop-blur-sm rounded-xl p-5 border border-white/10">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-sm font-semibold text-white/80">Primaire (60%)</h3>
+                    <button onclick="toggleLock('primary')" id="lock-primary" class="p-1.5 rounded-md hover:bg-white/10 text-white/40 transition-colors">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                    </button>
+                </div>
+                <div id="color-primary" class="h-24 rounded-lg mb-3 cursor-pointer shadow-inner" onclick="copyIndividual('primary')"></div>
+                <div class="flex justify-between items-center">
+                    <span id="hex-primary" class="font-mono text-sm text-white/80">#000000</span>
+                    <span id="contrast-primary" class="text-xs px-2 py-1 rounded bg-black/30 font-mono"></span>
+                </div>
+            </div>
+
+            <div class="bg-white/5 backdrop-blur-sm rounded-xl p-5 border border-white/10">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-sm font-semibold text-white/80">Secondaire (30%)</h3>
+                    <button onclick="toggleLock('secondary')" id="lock-secondary" class="p-1.5 rounded-md hover:bg-white/10 text-white/40 transition-colors">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                    </button>
+                </div>
+                <div id="color-secondary" class="h-24 rounded-lg mb-3 cursor-pointer shadow-inner" onclick="copyIndividual('secondary')"></div>
+                <div class="flex justify-between items-center">
+                    <span id="hex-secondary" class="font-mono text-sm text-white/80">#000000</span>
+                    <span id="contrast-secondary" class="text-xs px-2 py-1 rounded bg-black/30 font-mono"></span>
+                </div>
+            </div>
+
+            <div class="bg-white/5 backdrop-blur-sm rounded-xl p-5 border border-white/10">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-sm font-semibold text-white/80">Accent (10%)</h3>
+                    <button onclick="toggleLock('accent')" id="lock-accent" class="p-1.5 rounded-md hover:bg-white/10 text-white/40 transition-colors">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                    </button>
+                </div>
+                <div id="color-accent" class="h-24 rounded-lg mb-3 cursor-pointer shadow-inner" onclick="copyIndividual('accent')"></div>
+                <div class="flex justify-between items-center">
+                    <span id="hex-accent" class="font-mono text-sm text-white/80">#000000</span>
+                    <span id="contrast-accent" class="text-xs px-2 py-1 rounded bg-black/30 font-mono"></span>
+                </div>
+            </div>
+        </section>
+
+        <section class="bg-white/5 backdrop-blur-sm rounded-xl border border-white/10 overflow-hidden">
+            <div class="flex border-b border-white/10 bg-black/20">
+                <button onclick="switchExportTab('css')" id="tab-css" class="px-6 py-3 text-sm font-medium border-b-2 border-cyan-500 text-white">Variables CSS</button>
+                <button onclick="switchExportTab('tailwind')" id="tab-tailwind" class="px-6 py-3 text-sm font-medium border-b-2 border-transparent text-white/50 hover:text-white transition-colors">Tailwind Config</button>
+                <button onclick="switchExportTab('scss')" id="tab-scss" class="px-6 py-3 text-sm font-medium border-b-2 border-transparent text-white/50 hover:text-white transition-colors">SCSS</button>
+                <div class="ml-auto p-2">
+                    <button onclick="copyExport()" class="px-4 py-1.5 bg-white/10 hover:bg-white/20 rounded text-sm transition-colors flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                        Copier
+                    </button>
+                </div>
+            </div>
+            <div class="p-6 overflow-x-auto">
+                <pre id="code-export" class="font-mono text-sm text-white/70"></pre>
+            </div>
+        </section>
+    </main>
+
+    <div id="toast" class="fixed bottom-6 left-1/2 transform -translate-x-1/2 px-6 py-3 bg-white text-black rounded-lg font-medium shadow-2xl opacity-0 pointer-events-none z-50 flex items-center gap-3">
+        <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+        <span id="toast-message">Copié !</span>
+    </div>
+
+    <script>
+        const state = {
+            colors: { primary: '#FFFFFF', secondary: '#888888', accent: '#000000' },
+            locked: { primary: false, secondary: false, accent: false },
+            exportType: 'css'
+        };
+
+        let toastTimeout;
+
+        // --- MATHÉMATIQUES & THEORIE DES COULEURS ---
+
+        function hslToHex(h, s, l) {
+            l /= 100;
+            const a = s * Math.min(l, 1 - l) / 100;
+            const f = n => {
+                const k = (n + h / 30) % 12;
+                const color = l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
+                return Math.round(255 * color).toString(16).padStart(2, '0');
+            };
+            return `#${f(0)}${f(8)}${f(4)}`.toUpperCase();
+        }
+
+        function hexToHSL(hex) {
+            let r = parseInt(hex.slice(1, 3), 16) / 255;
+            let g = parseInt(hex.slice(3, 5), 16) / 255;
+            let b = parseInt(hex.slice(5, 7), 16) / 255;
+            let max = Math.max(r, g, b), min = Math.min(r, g, b);
+            let h, s, l = (max + min) / 2;
+            if (max == min) { h = s = 0; } else {
+                let d = max - min;
+                s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+                switch (max) {
+                    case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+                    case g: h = (b - r) / d + 2; break;
+                    case b: h = (r - g) / d + 4; break;
+                }
+                h /= 6;
+            }
+            return { h: Math.round(h * 360), s: Math.round(s * 100), l: Math.round(l * 100) };
+        }
+
+        const ColorHarmonies = {
+            analogous: (h) => ({
+                dominant: { h, s: 15, l: 95 },
+                secondary: { h: (h + 30) % 360, s: 35, l: 40 },
+                accent: { h: (h + 60) % 360, s: 85, l: 50 }
+            }),
+            complementary: (h) => ({
+                dominant: { h, s: 20, l: 90 },
+                secondary: { h, s: 40, l: 25 },
+                accent: { h: (h + 180) % 360, s: 90, l: 50 }
+            }),
+            splitComplementary: (h) => ({
+                dominant: { h, s: 15, l: 92 },
+                secondary: { h: (h + 150) % 360, s: 50, l: 45 },
+                accent: { h: (h + 210) % 360, s: 85, l: 55 }
+            }),
+            monochromatic: (h) => ({
+                dominant: { h, s: 10, l: 96 },
+                secondary: { h, s: 25, l: 75 },
+                accent: { h, s: 80, l: 35 }
+            })
+        };
+
+        // --- ACCESSIBILITÉ WCAG 2.1 ---
+
+        function getRelativeLuminance(hex) {
+            hex = hex.replace('#', '');
+            if (hex.length === 3) hex = hex.split('').map(c => c + c).join('');
+            const rs = parseInt(hex.substring(0, 2), 16) / 255;
+            const gs = parseInt(hex.substring(2, 4), 16) / 255;
+            const bs = parseInt(hex.substring(4, 6), 16) / 255;
+            const r = rs <= 0.03928 ? rs / 12.92 : Math.pow((rs + 0.055) / 1.055, 2.4);
+            const g = gs <= 0.03928 ? gs / 12.92 : Math.pow((gs + 0.055) / 1.055, 2.4);
+            const b = bs <= 0.03928 ? bs / 12.92 : Math.pow((bs + 0.055) / 1.055, 2.4);
+            return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+        }
+
+        function isLight(color) {
+            return getRelativeLuminance(color) > 0.179;
+        }
+
+        function getContrastColor(hex) {
+            return isLight(hex) ? '#0f172a' : '#ffffff'; // Slate 900 vs White
+        }
+
+        function getContrastRatioString(hex) {
+            const lum = getRelativeLuminance(hex);
+            const lumText = getRelativeLuminance(getContrastColor(hex));
+            const l1 = Math.max(lum, lumText);
+            const l2 = Math.min(lum, lumText);
+            const ratio = (l1 + 0.05) / (l2 + 0.05);
+            return ratio.toFixed(2) + ':1';
+        }
+
+        // --- LOGIQUE PRINCIPALE ---
+
+        function generatePalette() {
+            const harmony = document.getElementById('harmony-type').value;
+            let baseHue;
+
+            // Déduction de la teinte de base si verrouillé
+            if (state.locked.primary) baseHue = hexToHSL(state.colors.primary).h;
+            else if (state.locked.secondary) baseHue = hexToHSL(state.colors.secondary).h; // Simplification pour script
+            else if (state.locked.accent) baseHue = hexToHSL(state.colors.accent).h;
+            else baseHue = Math.floor(Math.random() * 360);
+
+            const scheme = ColorHarmonies[harmony](baseHue);
+
+            if (!state.locked.primary) state.colors.primary = hslToHex(scheme.dominant.h, scheme.dominant.s, scheme.dominant.l);
+            if (!state.locked.secondary) state.colors.secondary = hslToHex(scheme.secondary.h, scheme.secondary.s, scheme.secondary.l);
+            if (!state.locked.accent) state.colors.accent = hslToHex(scheme.accent.h, scheme.accent.s, scheme.accent.l);
+
+            updateUI();
+        }
+
+        function toggleLock(type) {
+            state.locked[type] = !state.locked[type];
+            const btn = document.getElementById(`lock-${type}`);
+            if (state.locked[type]) {
+                btn.classList.add('text-cyan-400', 'locked');
+                btn.classList.remove('text-white/40');
+            } else {
+                btn.classList.remove('text-cyan-400', 'locked');
+                btn.classList.add('text-white/40');
+            }
+        }
+
+        function updateUI() {
+            const { primary, secondary, accent } = state.colors;
+
+            // Mise à jour des cartes
+            ['primary', 'secondary', 'accent'].forEach(type => {
+                document.getElementById(`color-${type}`).style.backgroundColor = state.colors[type];
+                document.getElementById(`hex-${type}`).textContent = state.colors[type];
+                
+                const contrastNode = document.getElementById(`contrast-${type}`);
+                contrastNode.textContent = getContrastRatioString(state.colors[type]);
+                const isPass = parseFloat(contrastNode.textContent) >= 4.5;
+                contrastNode.className = `text-[10px] px-2 py-1 rounded font-mono ${isPass ? 'bg-green-500/20 text-green-300' : 'bg-red-500/20 text-red-300'}`;
+            });
+
+            // Mise à jour de l'aperçu
+            const domNode = document.getElementById('preview-dominant');
+            domNode.style.backgroundColor = primary;
+            domNode.style.color = getContrastColor(primary);
+            
+            const secNode = document.getElementById('preview-secondary');
+            secNode.style.backgroundColor = secondary;
+            secNode.style.color = getContrastColor(secondary);
+
+            const accNode = document.getElementById('preview-accent');
+            accNode.style.backgroundColor = accent;
+            accNode.style.color = getContrastColor(accent);
+
+            updateExportCode();
+        }
+
+        // --- EXPORT & PRESSE-PAPIER ---
+
+        function switchExportTab(type) {
+            state.exportType = type;
+            ['css', 'tailwind', 'scss'].forEach(t => {
+                const tab = document.getElementById(`tab-${t}`);
+                if (t === type) {
+                    tab.classList.add('border-cyan-500', 'text-white');
+                    tab.classList.remove('border-transparent', 'text-white/50');
+                } else {
+                    tab.classList.remove('border-cyan-500', 'text-white');
+                    tab.classList.add('border-transparent', 'text-white/50');
+                }
+            });
+            updateExportCode();
+        }
+
+        function updateExportCode() {
+            const { primary, secondary, accent } = state.colors;
+            const el = document.getElementById('code-export');
+            
+            if (state.exportType === 'css') {
+                el.textContent = `:root {\n  --color-primary: ${primary};\n  --color-secondary: ${secondary};\n  --color-accent: ${accent};\n}`;
+            } else if (state.exportType === 'tailwind') {
+                el.textContent = `module.exports = {\n  theme: {\n    extend: {\n      colors: {\n        primary: '${primary}',\n        secondary: '${secondary}',\n        accent: '${accent}',\n      }\n    }\n  }\n}`;
+            } else if (state.exportType === 'scss') {
+                el.textContent = `$color-primary: ${primary};\n$color-secondary: ${secondary};\n$color-accent: ${accent};`;
+            }
+        }
+
+        function copyToClipboardFallback(text, message) {
+            const textArea = document.createElement("textarea");
+            textArea.value = text;
+            textArea.style.position = "fixed"; textArea.style.left = "-999999px"; textArea.style.top = "-999999px";
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            try {
+                document.execCommand('copy');
+                showToast(message);
+            } catch (err) {
+                console.error('Fallback: Oops, unable to copy', err);
+            }
+            document.body.removeChild(textArea);
+        }
+
+        function executeCopy(text, message) {
+            if (!navigator.clipboard) {
+                copyToClipboardFallback(text, message);
+                return;
+            }
+            navigator.clipboard.writeText(text)
+                .then(() => showToast(message))
+                .catch(err => copyToClipboardFallback(text, message));
+        }
+
+        function copyIndividual(type) {
+            executeCopy(state.colors[type], `${type.charAt(0).toUpperCase() + type.slice(1)} copié !`);
+        }
+
+        function copyExport() {
+            executeCopy(document.getElementById('code-export').textContent, `Code ${state.exportType.toUpperCase()} copié !`);
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toast-message').textContent = message;
+            
+            clearTimeout(toastTimeout);
+            
+            toast.classList.remove('opacity-0', 'pointer-events-none', 'toast-hide');
+            toast.classList.add('copy-toast');
+            
+            toastTimeout = setTimeout(() => {
+                toast.classList.remove('copy-toast');
+                toast.classList.add('toast-hide');
+                setTimeout(() => {
+                    toast.classList.add('opacity-0', 'pointer-events-none');
+                    toast.classList.remove('toast-hide');
+                }, 300); // Wait for slideDown animation
+            }, 2000);
+        }
+
+        // Init
+        document.addEventListener('DOMContentLoaded', generatePalette);
+        
+        // Espace pour générer
+        document.addEventListener('keydown', (e) => {
+            if (e.code === 'Space' && e.target === document.body) {
+                e.preventDefault();
+                generatePalette();
+            }
+        });
+    </script>
+</body>
+</html>
