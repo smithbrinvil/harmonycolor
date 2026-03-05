@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Documentation - ColorHarmony Pro API</title>
+   <script src="https://cdn.tailwindcss.com"></script>
+   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+   <style>
+       body {
+           font-family: 'Space Grotesk', sans-serif;
+           background: #0a0a0a;
+           color: #e5e5e5;
+       }
+       .font-mono { font-family: 'JetBrains Mono', monospace; }
+       
+       .doc-section {
+           scroll-margin-top: 2rem;
+       }
+       
+       .code-block {
+           background: #111;
+           border: 1px solid #222;
+           border-radius: 0.75rem;
+           overflow: hidden;
+       }
+       
+       .code-header {
+           background: #1a1a1a;
+           border-bottom: 1px solid #222;
+           padding: 0.75rem 1rem;
+           display: flex;
+           align-items: center;
+           gap: 0.5rem;
+       }
+       
+       .code-dot {
+           width: 12px;
+           height: 12px;
+           border-radius: 50%;
+       }
+       
+       .syntax-keyword { color: #c678dd; }
+       .syntax-function { color: #61afef; }
+       .syntax-string { color: #98c379; }
+       .syntax-comment { color: #5c6370; font-style: italic; }
+       .syntax-number { color: #d19a66; }
+       .syntax-property { color: #e06c75; }
+       
+       .nav-link {
+           transition: all 0.2s;
+           border-left: 2px solid transparent;
+       }
+       
+       .nav-link:hover, .nav-link.active {
+           border-left-color: #fff;
+           background: rgba(255,255,255,0.05);
+           color: #fff;
+       }
+       
+       .parameter-card {
+           background: rgba(255,255,255,0.03);
+           border: 1px solid rgba(255,255,255,0.1);
+           transition: all 0.2s;
+       }
+       
+       .parameter-card:hover {
+           border-color: rgba(255,255,255,0.2);
+           background: rgba(255,255,255,0.05);
+       }
+       
+       .badge {
+           font-size: 0.75rem;
+           padding: 0.25rem 0.5rem;
+           border-radius: 0.25rem;
+           font-weight: 600;
+           text-transform: uppercase;
+           letter-spacing: 0.05em;
+       }
+       
+       .badge-required { background: #e06c75; color: #000; }
+       .badge-optional { background: #61afef; color: #000; }
+       .badge-type { background: #c678dd; color: #000; }
+       
+       table {
+           width: 100%;
+           border-collapse: collapse;
+       }
+       
+       th {
+           text-align: left;
+           padding: 1rem;
+           background: rgba(255,255,255,0.05);
+           border-bottom: 2px solid rgba(255,255,255,0.1);
+           font-weight: 600;
+           text-transform: uppercase;
+           font-size: 0.75rem;
+           letter-spacing: 0.1em;
+           color: #888;
+       }
+       
+       td {
+           padding: 1rem;
+           border-bottom: 1px solid rgba(255,255,255,0.05);
+       }
+       
+       tr:hover td {
+           background: rgba(255,255,255,0.02);
+       }
+       
+       .method-signature {
+           background: #1a1a1a;
+           border: 1px solid #333;
+           border-radius: 0.5rem;
+           padding: 1rem;
+           font-family: 'JetBrains Mono', monospace;
+           margin: 1rem 0;
+       }
+       
+       .highlight-box {
+           background: linear-gradient(135deg, rgba(97, 175, 239, 0.1), rgba(198, 120, 221, 0.1));
+           border: 1px solid rgba(97, 175, 239, 0.3);
+           border-radius: 0.75rem;
+           padding: 1.5rem;
+       }
+       
+       .warning-box {
+           background: rgba(224, 108, 117, 0.1);
+           border: 1px solid rgba(224, 108, 117, 0.3);
+           border-radius: 0.75rem;
+           padding: 1.5rem;
+       }
+       
+       .tip-box {
+           background: rgba(152, 195, 121, 0.1);
+           border: 1px solid rgba(152, 195, 121, 0.3);
+           border-radius: 0.75rem;
+           padding: 1.5rem;
+       }
+   </style>
+</head>
+<body class="min-h-screen">
+   <div class="flex flex-col lg:flex-row min-h-screen">
+       
+       <!-- Sidebar Navigation -->
+       <aside class="lg:w-64 lg:fixed lg:h-screen border-r border-white/10 bg-black/50 backdrop-blur-xl overflow-y-auto">
+           <div class="p-6 border-b border-white/10">
+               <div class="flex items-center gap-3 mb-2">
+                   <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-pink-500 via-purple-500 to-cyan-500 flex items-center justify-center">
+                       <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"></path>
+                       </svg>
+                   </div>
+                   <span class="font-bold text-lg">ColorHarmony</span>
+               </div>
+               <p class="text-xs text-white/40">API Documentation v2.0</p>
+           </div>
+           
+           <nav class="p-4 space-y-1">
+               <a href="#introduction" class="nav-link block px-4 py-2 text-sm text-white/60 hover:text-white rounded">Introduction</a>
+               <a href="#architecture" class="nav-link block px-4 py-2 text-sm text-white/60 hover:text-white rounded">Architecture</a>
+               <a href="#color-harmonies" class="nav-link block px-4 py-2 text-sm text-white/60 hover:text-white rounded">Color Harmonies</a>
+               
+               <div class="pt-4 pb-2 px-4 text-xs font-semibold text-white/30 uppercase tracking-wider">Core API</div>
+               <a href="#hsltohex" class="nav-link block px-4 py-2 text-sm text-white/60 hover:text-white rounded">hslToHex()</a>
+               <a href="#relativeluminance" class="nav-link block px-4 py-2 text-sm text-white/60 hover:text-white rounded">getRelativeLuminance()</a>
+               <a href="#contrastratio" class="nav-link block px-4 py-2 text-sm text-white/60 hover:text-white rounded">getContrastRatio()</a>
+               <a href="#accessiblecolor" class="nav-link block px-4 py-2 text-sm text-white/60 hover:text-white rounded">getAccessibleTextColor()</a>
+               
+               <div class="pt-4 pb-2 px-4 text-xs font-semibold text-white/30 uppercase tracking-wider">Harmony Types</div>
+               <a href="#analogous" class="nav-link block px-4 py-2 text-sm text-white/60 hover:text-white rounded">Analogous</a>
+               <a href="#complementary" class="nav-link block px-4 py-2 text-sm text-white/60 hover:text-white rounded">Complementary</a>
+               <a href="#split-complementary" class="nav-link block px-4 py-2 text-sm text-white/60 hover:text-white rounded">Split-Complementary</a>
+               <a href="#monochromatic" class="nav-link block px-4 py-2 text-sm text-white/60 hover:text-white rounded">Monochromatic</a>
+               
+               <div class="pt-4 pb-2 px-4 text-xs font-semibold text-white/30 uppercase tracking-wider">Utils</div>
+               <a href="#clipboard" class="nav-link block px-4 py-2 text-sm text-white/60 hover:text-white rounded">Clipboard Fallback</a>
+               <a href="#wcag" class="nav-link block px-4 py-2 text-sm text-white/60 hover:text-white rounded">WCAG 2.1 Compliance</a>
+           </nav>
+       </aside>
+
+       <!-- Main Content -->
+       <main class="lg:ml-64 flex-1 p-8 lg:p-12 max-w-5xl">
+           
+           <!-- Header -->
+           <div class="mb-12 border-b border-white/10 pb-8">
+               <h1 class="text-4xl font-bold mb-4">ColorHarmony Pro API</h1>
+               <p class="text-xl text-white/60 leading-relaxed">
+                   Documentation technique complète du générateur de palettes chromatiques basé sur la règle 60-30-10 
+                   et les principes mathématiques de la théorie des couleurs.
+               </p>
+           </div>
+
+           <!-- Introduction -->
+           <section id="introduction" class="doc-section mb-16">
+               <h2 class="text-3xl font-bold mb-6 flex items-center gap-3">
+                   <span class="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center text-sm">01</span>
+                   Introduction
+               </h2>
+               
+               <div class="space-y-6 text-white/70 leading-relaxed">
+                   <p>
+                       ColorHarmony Pro est un moteur de génération de palettes chromatiques qui remplace les approches 
+                       aléatoires par des algorithmes mathématiques stricts basés sur l'espace colorimétrique HSL 
+                       (Hue, Saturation, Lightness).
+                   </p>
+                   
+                   <div class="highlight-box">
+                       <h3 class="font-semibold text-white mb-2 flex items-center gap-2">
+                           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                           </svg>
+                           Règle 60-30-10
+                       </h3>
+                       <p class="text-sm">
+                           Principe fondamental du design d'interface : 60% de couleur dominante (neutre), 
+                           30% de couleur secondaire (support), 10% d'accent (call-to-action).
+                       </p>
+                   </div>
+
+                   <h3 class="text-xl font-semibold text-white mt-8 mb-4">Caractéristiques techniques</h3>
+                   <ul class="space-y-3 list-disc list-inside">
+                       <li>Calculs modulo 360° pour la roue chromatique</li>
+                       <li>Contraintes de saturation [10%, 90%] et luminance [15%, 95%]</li>
+                       <li>Calcul de luminance relative WCAG 2.1 exact</li>
+                       <li>Fallback presse-papier sécurisé pour contextes non-HTTPS</li>
+                       <li>Système de verrouillage de couleurs avec recalcul harmonique</li>
+                   </ul>
+               </div>
+           </section>
+
+           <!-- Architecture -->
+           <section id="architecture" class="doc-section mb-16">
+               <h2 class="text-3xl font-bold mb-6 flex items-center gap-3">
+                   <span class="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center text-sm">02</span>
+                   Architecture
+               </h2>
+
+               <div class="code-block mb-8">
+                   <div class="code-header">
+                       <div class="code-dot bg-red-500"></div>
+                       <div class="code-dot bg-yellow-500"></div>
+                       <div class="code-dot bg-green-500"></div>
+                       <span class="ml-2 text-sm text-white/40">core/color-engine.js</span>
+                   </div>
+                   <pre class="p-4 overflow-x-auto text-sm font-mono leading-relaxed"><code><span class="syntax-comment">/**
+* Architecture modulaire du Color Engine
+* Séparation des concerns: conversion, accessibilité, harmonies
+*/</span>
+
+<span class="syntax-keyword">const</span> <span class="syntax-property">ColorEngine</span> = {
+ <span class="syntax-comment">// Espace de conversion colorimétrique</span>
+ converters: { <span class="syntax-property">hslToHex</span>, <span class="syntax-property">hexToRgb</span>, <span class="syntax-property">rgbToHsl</span> },
+ 
+ <span class="syntax-comment">// Calculs d'accessibilité WCAG 2.1</span>
+ accessibility: { 
+   <span class="syntax-property">getRelativeLuminance</span>, 
+   <span class="syntax-property">getContrastRatio</span>,
+   <span class="syntax-property">getAccessibleTextColor</span> 
+ },
+ 
+ <span class="syntax-comment">// Algorithmes d'harmonies chromatiques</span>
+ harmonies: {
+   <span class="syntax-property">analogous</span>,
+   <span class="syntax-property">complementary</span>,
+   <span class="syntax-property">splitComplementary</span>,
+   <span class="syntax-property">monochromatic</span>
+ }
+};</code></pre>
+               </div>
+
+               <h3 class="text-xl font-semibold text-white mb-4">Flux de données</h3>
+               <div class="bg-white/5 rounded-xl p-6 border border-white/10">
+                   <div class="flex flex-col md:flex-row items-center justify-between gap-4 text-center">
+                       <div class="flex-1">
+                           <div class="w-16 h-16 mx-auto rounded-full bg-purple-500/20 border-2 border-purple-500 flex items-center justify-center mb-2">
+                               <span class="text-2xl">🎲</span>
+                           </div>
+                           <p class="text-sm font-medium">Base Hue</p>
+                           <p class="text-xs text-white/40">0-360° aléatoire</p>
+                       </div>
+                       <div class="text-white/20">→</div>
+                       <div class="flex-1">
+                           <div class="w-16 h-16 mx-auto rounded-full bg-blue-500/20 border-2 border-blue-500 flex items-center justify-center mb-2">
+                               <span class="text-2xl">⚙️</span>
+                           </div>
+                           <p class="text-sm font-medium">Harmony Algorithm</p>
+                           <p class="text-xs text-white/40">Math % 360</p>
+                       </div>
+                       <div class="text-white/20">→</div>
+                       <div class="flex-1">
+                           <div class="w-16 h-16 mx-auto rounded-full bg-green-500/20 border-2 border-green-500 flex items-center justify-center mb-2">
+                               <span class="text-2xl">🎨</span>
+                           </div>
+                           <p class="text-sm font-medium">HSL → HEX</p>
+                           <p class="text-xs text-white/40">Conversion exacte</p>
+                       </div>
+                       <div class="text-white/20">→</div>
+                       <div class="flex-1">
+                           <div class="w-16 h-16 mx-auto rounded-full bg-orange-500/20 border-2 border-orange-500 flex items-center justify-center mb-2">
+                               <span class="text-2xl">♿</span>
+                           </div>
+                           <p class="text-sm font-medium">WCAG Contrast</p>
+                           <p class="text-xs text-white/40">Text color calc</p>
+                       </div>
+                   </div>
+               </div>
+           </section>
+
+           <!-- Color Harmonies -->
+           <section id="color-harmonies" class="doc-section mb-16">
+               <h2 class="text-3xl font-bold mb-6 flex items-center gap-3">
+                   <span class="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center text-sm">03</span>
+                   Color Harmonies
+               </h2>
+
+               <p class="text-white/70 mb-8 leading-relaxed">
+                   Les harmonies chromatiques sont des relations angulaires définies sur la roue des couleurs (360°). 
+                   Chaque algorithme produit trois valeurs HSL contraintes pour respecter la règle 60-30-10.
+               </p>
+
+               <div class="overflow-x-auto mb-8">
+                   <table>
+                       <thead>
+                           <tr>
+                               <th>Algorithme</th>
+                               <th>Formule angulaire</th>
+                               <th>Caractéristique</th>
+                               <th>Use Case</th>
+                           </tr>
+                       </thead>
+                       <tbody class="text-sm">
+                           <tr>
+                               <td class="font-mono text-purple-400">analogous</td>
+                               <td>+30°, +60°</td>
+                               <td>Harmonie douce, faible contraste</td>
+                               <td>Interfaces élégantes, luxe</td>
+                           </tr>
+                           <tr>
+                               <td class="font-mono text-purple-400">complementary</td>
+                               <td>+180°</td>
+                               <td>Contraste maximal</td>
+                               <td>CTA, alertes, sport</td>
+                           </tr>
+                           <tr>
+                               <td class="font-mono text-purple-400">splitComplementary</td>
+                               <td>+150°, +210°</td>
+                               <td>Contraste adouci, triangle</td>
+                               <td>UI équilibrée (défaut)</td>
+                           </tr>
+                           <tr>
+                               <td class="font-mono text-purple-400">monochromatic</td>
+                               <td>0° (fixe)</td>
+                               <td>Teinte unique, variations L/S</td>
+                               <td>Minimalisme, SaaS</td>
+                           </tr>
+                       </tbody>
+                   </table>
+               </div>
+
+               <!-- Analogous -->
+               <div id="analogous" class="mb-12">
+                   <h3 class="text-2xl font-semibold text-white mb-4">Analogous</h3>
+                   <div class="method-signature font-mono text-sm">
+                       <span class="syntax-property">analogous</span>(<span class="syntax-property">baseHue</span>: <span class="syntax-keyword">number</span>): <span class="syntax-keyword">Palette</span>
+                   </div>
+                   
+                   <div class="code-block mt-4">
+                       <div class="code-header">
+                           <span class="text-sm text-white/40">Implementation</span>
+                       </div>
+                       <pre class="p-4 overflow-x-auto text-sm font-mono"><code><span class="syntax-keyword">const</span> <span class="syntax-property">analogous</span> = (<span class="syntax-property">baseHue</span>) => ({
+ <span class="syntax-property">dominant</span>:  { <span class="syntax-property">h</span>: <span class="syntax-property">baseHue</span>, <span class="syntax-property">s</span>: <span class="syntax-number">15</span>, <span class="syntax-property">l</span>: <span class="syntax-number">95</span> },           <span class="syntax-comment">// Base très claire</span>
+ <span class="syntax-property">secondary</span>: { <span class="syntax-property">h</span>: (<span class="syntax-property">baseHue</span> + <span class="syntax-number">30</span>) % <span class="syntax-number">360</span>, <span class="syntax-property">s</span>: <span class="syntax-number">35</span>, <span class="syntax-property">l</span>: <span class="syntax-number">40</span> },  <span class="syntax-comment">// Décalage 30°</span>
+ <span class="syntax-property">accent</span>:    { <span class="syntax-property">h</span>: (<span class="syntax-property">baseHue</span> + <span class="syntax-number">60</span>) % <span class="syntax-number">360</span>, <span class="syntax-property">s</span>: <span class="syntax-number">85</span>, <span class="syntax-property">l</span>: <span class="syntax-number">50</span> }   <span class="syntax-comment">// Décalage 60°</span>
+});</code></pre>
+                   </div>
+
+                   <div class="mt-4 p-4 bg-white/5 rounded-lg border border-white/10">
+                       <div class="flex items-center gap-4 mb-2">
+                           <div class="w-12 h-12 rounded bg-[#F5F0F5]"></div>
+                           <div class="w-12 h-12 rounded bg-[#5C4A5C]"></div>
+                           <div class="w-12 h-12 rounded bg-[#8B4D8B]"></div>
+                       </div>
+                       <p class="text-xs text-white/40 mt-2">Exemple: Base 300° (Magenta) → 300°, 330°, 360°</p>
+                   </div>
+               </div>
+
+               <!-- Complementary -->
+               <div id="complementary" class="mb-12">
+                   <h3 class="text-2xl font-semibold text-white mb-4">Complementary</h3>
+                   <div class="method-signature font-mono text-sm">
+                       <span class="syntax-property">complementary</span>(<span class="syntax-property">baseHue</span>: <span class="syntax-keyword">number</span>): <span class="syntax-keyword">Palette</span>
+                   </div>
+                   
+                   <div class="code-block mt-4">
+                       <div class="code-header">
+                           <span class="text-sm text-white/40">Implementation</span>
+                       </div>
+                       <pre class="p-4 overflow-x-auto text-sm font-mono"><code><span class="syntax-keyword">const</span> <span class="syntax-property">complementary</span> = (<span class="syntax-property">baseHue</span>) => ({
+ <span class="syntax-property">dominant</span>:  { <span class="syntax-property">h</span>: <span class="syntax-property">baseHue</span>, <span class="syntax-property">s</span>: <span class="syntax-number">20</span>, <span class="syntax-property">l</span>: <span class="syntax-number">90</span> },
+ <span class="syntax-property">secondary</span>: { <span class="syntax-property">h</span>: <span class="syntax-property">baseHue</span>, <span class="syntax-property">s</span>: <span class="syntax-number">40</span>, <span class="syntax-property">l</span>: <span class="syntax-number">25</span> },              <span class="syntax-comment">// Même teinte, contraste L</span>
+ <span class="syntax-property">accent</span>:    { <span class="syntax-property">h</span>: (<span class="syntax-property">baseHue</span> + <span class="syntax-number">180</span>) % <span class="syntax-number">360</span>, <span class="syntax-property">s</span>: <span class="syntax-number">90</span>, <span class="syntax-property">l</span>: <span class="syntax-number">50</span> } <span class="syntax-comment">// Opposé exact 180°</span>
+});</code></pre>
+                   </div>
+
+                   <div class="warning-box mt-4">
+                       <strong class="text-red-400">Attention:</strong> Le contraste maximal peut être agressif visuellement. 
+                       Utiliser avec parcimonie pour les éléments d'alerte ou CTA primaires.
+                   </div>
+               </div>
+
+               <!-- Split-Complementary -->
+               <div id="split-complementary" class="mb-12">
+                   <h3 class="text-2xl font-semibold text-white mb-4">Split-Complementary</h3>
+                   <div class="method-signature font-mono text-sm">
+                       <span class="syntax-property">splitComplementary</span>(<span class="syntax-property">baseHue</span>: <span class="syntax-keyword">number</span>): <span class="syntax-keyword">Palette</span>
+                   </div>
+                   
+                   <div class="code-block mt-4">
+                       <div class="code-header">
+                           <span class="text-sm text-white/40">Implementation</span>
+                       </div>
+                       <pre class="p-4 overflow-x-auto text-sm font-mono"><code><span class="syntax-keyword">const</span> <span class="syntax-property">splitComplementary</span> = (<span class="syntax-property">baseHue</span>) => ({
+ <span class="syntax-property">dominant</span>:  { <span class="syntax-property">h</span>: <span class="syntax-property">baseHue</span>, <span class="syntax-property">s</span>: <span class="syntax-number">15</span>, <span class="syntax-property">l</span>: <span class="syntax-number">92</span> },
+ <span class="syntax-property">secondary</span>: { <span class="syntax-property">h</span>: (<span class="syntax-property">baseHue</span> + <span class="syntax-number">150</span>) % <span class="syntax-number">360</span>, <span class="syntax-property">s</span>: <span class="syntax-number">50</span>, <span class="syntax-property">l</span>: <span class="syntax-number">45</span> }, <span class="syntax-comment">// -30° de l'opposé</span>
+ <span class="syntax-property">accent</span>:    { <span class="syntax-property">h</span>: (<span class="syntax-property">baseHue</span> + <span class="syntax-number">210</span>) % <span class="syntax-number">360</span>, <span class="syntax-property">s</span>: <span class="syntax-number">85</span>, <span class="syntax-property">l</span>: <span class="syntax-number">55</span> }  <span class="syntax-comment">// +30° de l'opposé</span>
+});</code></pre>
+                   </div>
+
+                   <div class="tip-box mt-4">
+                       <strong class="text-green-400">Recommandé:</strong> C'est l'algorithme par défaut car il offre le meilleur 
+                       équilibre entre contraste et harmonie pour les interfaces utilisateur.
+                   </div>
+               </div>
+
+               <!-- Monochromatic -->
+               <div id="monochromatic" class="mb-12">
+                   <h3 class="text-2xl font-semibold text-white mb-4">Monochromatic</h3>
+                   <div class="method-signature font-mono text-sm">
+                       <span class="syntax-property">monochromatic</span>(<span class="syntax-property">baseHue</span>: <span class="syntax-keyword">number</span>): <span class="syntax-keyword">Palette</span>
+                   </div>
+                   
+                   <div class="code-block mt-4">
+                       <div class="code-header">
+                           <span class="text-sm text-white/40">Implementation</span>
+                       </div>
+                       <pre class="p-4 overflow-x-auto text-sm font-mono"><code><span class="syntax-keyword">const</span> <span class="syntax-property">monochromatic</span> = (<span class="syntax-property">baseHue</span>) => ({
+ <span class="syntax-property">dominant</span>:  { <span class="syntax-property">h</span>: <span class="syntax-property">baseHue</span>, <span class="syntax-property">s</span>: <span class="syntax-number">10</span>, <span class="syntax-property">l</span>: <span class="syntax-number">96</span> },  <span class="syntax-comment">// Très désaturé, très clair</span>
+ <span class="syntax-property">secondary</span>: { <span class="syntax-property">h</span>: <span class="syntax-property">baseHue</span>, <span class="syntax-property">s</span>: <span class="syntax-number">25</span>, <span class="syntax-property">l</span>: <span class="syntax-number">75</span> },  <span class="syntax-comment">// Saturation moyenne</span>
+ <span class="syntax-property">accent</span>:    { <span class="syntax-property">h</span>: <span class="syntax-property">baseHue</span>, <span class="syntax-property">s</span>: <span class="syntax-number">80</span>, <span class="syntax-property">l</span>: <span class="syntax-number">35</span> }   <span class="syntax-comment">// Forte saturation, sombre</span>
+});</code></pre>
+                   </div>
+               </div>
+           </section>
+
+           <!-- Core API Reference -->
+           <section class="doc-section mb-16">
+               <h2 class="text-3xl font-bold mb-6 flex items-center gap-3">
+                   <span class="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center text-sm">04</span>
+                   Core API Reference
+               </h2>
+
+               <!-- hslToHex -->
+               <div id="hsltohex" class="mb-12">
+                   <h3 class="text-2xl font-semibold text-white mb-4">hslToHex()</h3>
+                   <div class="method-signature font-mono text-sm mb-4">
+                       <span class="syntax-function">hslToHex</span>(<span class="syntax-property">h</span>: <span class="syntax-keyword">number</span>, <span class="syntax-property">s</span>: <span class="syntax-keyword">number</span>, <span class="syntax-property">l</span>: <span class="syntax-keyword">number</span>): <span class="syntax-keyword">string</span>
+                   </div>
+                   
+                   <p class="text-white/70 mb-4">Convertit une couleur HSL en notation hexadécimale #RRGGBB.</p>
+
+                   <div class="grid md:grid-cols-3 gap-4 mb-6">
+                       <div class="parameter-card p-4 rounded-lg">
+                           <div class="flex items-center gap-2 mb-2">
+                               <span class="badge badge-required">Required</span>
+                               <span class="badge badge-type">Number</span>
+                           </div>
+                           <code class="text-purple-400 font-mono">h</code>
+                           <p class="text-sm text-white/60 mt-1">Teinte 0-360°</p>
+                       </div>
+                       <div class="parameter-card p-4 rounded-lg">
+                           <div class="flex items-center gap-2 mb-2">
+                               <span class="badge badge-required">Required</span>
+                               <span class="badge badge-type">Number</span>
+                           </div>
+                           <code class="text-purple-400 font-mono">s</code>
+                           <p class="text-sm text-white/60 mt-1">Saturation 0-100%</p>
+                       </div>
+                       <div class="parameter-card p-4 rounded-lg">
+                           <div class="flex items-center gap-2 mb-2">
+                               <span class="badge badge-required">Required</span>
+                               <span class="badge badge-type">Number</span>
+                           </div>
+                           <code class="text-purple-400 font-mono">l</code>
+                           <p class="text-sm text-white/60 mt-1">Luminance 0-100%</p>
+                       </div>
+                   </div>
+
+                   <div class="code-block">
+                       <div class="code-header">
+                           <span class="text-sm text-white/40">Example</span>
+                       </div>
+                       <pre class="p-4 overflow-x-auto text-sm font-mono"><code><span class="syntax-function">hslToHex</span>(<span class="syntax-number">210</span>, <span class="syntax-number">50</span>, <span class="syntax-number">50</span>); <span class="syntax-comment">// Returns "#4080BF"</span></code></pre>
+                   </div>
+               </div>
+
+               <!-- getRelativeLuminance -->
+               <div id="relativeluminance" class="mb-12">
+                   <h3 class="text-2xl font-semibold text-white mb-4">getRelativeLuminance()</h3>
+                   <div class="method-signature font-mono text-sm mb-4">
+                       <span class="syntax-function">getRelativeLuminance</span>(<span class="syntax-property">hex</span>: <span class="syntax-keyword">string</span>): <span class="syntax-keyword">number</span>
+                   </div>
+                   
+                   <p class="text-white/70 mb-4">
+                       Calcule la luminance relative d'une couleur selon la spécification WCAG 2.1. 
+                       Formule: L = 0.2126×R + 0.7152×G + 0.0722×B où R, G, B sont linéarisés.
+                   </p>
+
+                   <div class="code-block">
+                       <div class="code-header">
+                           <span class="text-sm text-white/40">Implementation WCAG 2.1</span>
+                       </div>
+                       <pre class="p-4 overflow-x-auto text-sm font-mono"><code><span class="syntax-keyword">function</span> <span class="syntax-function">getRelativeLuminance</span>(<span class="syntax-property">hex</span>) {
+ <span class="syntax-keyword">const</span> <span class="syntax-property">rgb</span> = <span class="syntax-property">hex</span>.<span class="syntax-function">replace</span>(<span class="syntax-string">'#'</span>, <span class="syntax-string">''</span>).<span class="syntax-function">match</span>(<span class="syntax-string">/.{2}/g</span>).<span class="syntax-function">map</span>(<span class="syntax-property">x</span> => {
+   <span class="syntax-keyword">const</span> <span class="syntax-property">v</span> = <span class="syntax-function">parseInt</span>(<span class="syntax-property">x</span>, <span class="syntax-number">16</span>) / <span class="syntax-number">255</span>;
+   <span class="syntax-keyword">return</span> <span class="syntax-property">v</span> <= <span class="syntax-number">0.03928</span> 
+     ? <span class="syntax-property">v</span> / <span class="syntax-number">12.92</span> 
+     : <span class="syntax-property">Math</span>.<span class="syntax-function">pow</span>((<span class="syntax-property">v</span> + <span class="syntax-number">0.055</span>) / <span class="syntax-number">1.055</span>, <span class="syntax-number">2.4</span>);
+ });
+ <span class="syntax-keyword">return</span> <span class="syntax-number">0.2126</span> * <span class="syntax-property">rgb</span>[<span class="syntax-number">0</span>] + <span class="syntax-number">0.7152</span> * <span class="syntax-property">rgb</span>[<span class="syntax-number">1</span>] + <span class="syntax-number">0.0722</span> * <span class="syntax-property">rgb</span>[<span class="syntax-number">2</span>];
+}</code></pre>
+                   </div>
+               </div>
+
+               <!-- getContrastRatio -->
+               <div id="contrastratio" class="mb-12">
+                   <h3 class="text-2xl font-semibold text-white mb-4">getContrastRatio()</h3>
+                   <div class="method-signature font-mono text-sm mb-4">
+                       <span class="syntax-function">getContrastRatio</span>(<span class="syntax-property">hex1</span>: <span class="syntax-keyword">string</span>, <span class="syntax-property">hex2</span>: <span class="syntax-keyword">string</span>): <span class="syntax-keyword">number</span>
+                   </div>
+                   
+                   <p class="text-white/70 mb-4">
+                       Calcule le ratio de contraste entre deux couleurs. 
+                       WCAG requiert ≥4.5:1 pour texte normal, ≥3:1 pour texte large.
+                   </p>
+
+                   <div class="highlight-box mb-4">
+                       <p class="text-sm font-mono">Ratio = (L1 + 0.05) / (L2 + 0.05)</p>
+                       <p class="text-xs text-white/60 mt-2">Où L1 est la luminance la plus claire et L2 la plus foncée</p>
+                   </div>
+               </div>
+
+               <!-- getAccessibleTextColor -->
+               <div id="accessiblecolor" class="mb-12">
+                   <h3 class="text-2xl font-semibold text-white mb-4">getAccessibleTextColor()</h3>
+                   <div class="method-signature font-mono text-sm mb-4">
+                       <span class="syntax-function">getAccessibleTextColor</span>(<span class="syntax-property">bgHex</span>: <span class="syntax-keyword">string</span>): <span class="syntax-keyword">string</span>
+                   </div>
+                   
+                   <p class="text-white/70 mb-4">
+                       Détermine automatiquement si le texte doit être noir (#000000) ou blanc (#FFFFFF) 
+                       pour maximiser le contraste d'accessibilité sur un arrière-plan donné.
+                   </p>
+
+                   <div class="code-block">
+                       <div class="code-header">
+                           <span class="text-sm text-white/40">Logic</span>
+                       </div>
+                       <pre class="p-4 overflow-x-auto text-sm font-mono"><code><span class="syntax-keyword">function</span> <span class="syntax-function">getAccessibleTextColor</span>(<span class="syntax-property">bgHex</span>) {
+ <span class="syntax-keyword">const</span> <span class="syntax-property">whiteContrast</span> = <span class="syntax-function">getContrastRatio</span>(<span class="syntax-property">bgHex</span>, <span class="syntax-string">'#FFFFFF'</span>);
+ <span class="syntax-keyword">const</span> <span class="syntax-property">blackContrast</span> = <span class="syntax-function">getContrastRatio</span>(<span class="syntax-property">bgHex</span>, <span class="syntax-string">'#000000'</span>);
+ <span class="syntax-keyword">return</span> <span class="syntax-property">whiteContrast</span> >= <span class="syntax-property">blackContrast</span> ? <span class="syntax-string">'#FFFFFF'</span> : <span class="syntax-string">'#000000'</span>;
+}</code></pre>
+                   </div>
+               </div>
+           </section>
+
+           <!-- Utils -->
+           <section class="doc-section mb-16">
+               <h2 class="text-3xl font-bold mb-6 flex items-center gap-3">
+                   <span class="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center text-sm">05</span>
+                   Utilities
+               </h2>
+
+               <!-- Clipboard -->
+               <div id="clipboard" class="mb-12">
+                   <h3 class="text-2xl font-semibold text-white mb-4">Clipboard Fallback</h3>
+                   <p class="text-white/70 mb-4">
+                       Solution de repli sécurisée pour les environnements non-HTTPS ou lorsque l'API Clipboard 
+                       n'est pas disponible (anciens navigateurs, iframes, etc.).
+                   </p>
+
+                   <div class="code-block">
+                       <div class="code-header">
+                           <span class="text-sm text-white/40">Secure Implementation</span>
+                       </div>
+                       <pre class="p-4 overflow-x-auto text-sm font-mono"><code><span class="syntax-keyword">async function</span> <span class="syntax-function">copyToClipboard</span>(<span class="syntax-property">text</span>) {
+ <span class="syntax-keyword">try</span> {
+   <span class="syntax-keyword">if</span> (<span class="syntax-property">navigator</span>.<span class="syntax-property">clipboard</span> && <span class="syntax-property">window</span>.<span class="syntax-property">isSecureContext</span>) {
+     <span class="syntax-keyword">await</span> <span class="syntax-property">navigator</span>.<span class="syntax-property">clipboard</span>.<span class="syntax-function">writeText</span>(<span class="syntax-property">text</span>);
+   } <span class="syntax-keyword">else</span> {
+     <span class="syntax-comment">// Fallback pour HTTP ou contextes non-sécurisés</span>
+     <span class="syntax-keyword">const</span> <span class="syntax-property">textArea</span> = <span class="syntax-property">document</span>.<span class="syntax-function">createElement</span>(<span class="syntax-string">'textarea'</span>);
+     <span class="syntax-property">textArea</span>.<span class="syntax-property">value</span> = <span class="syntax-property">text</span>;
+     <span class="syntax-property">textArea</span>.<span class="syntax-property">style</span>.<span class="syntax-property">position</span> = <span class="syntax-string">'fixed'</span>;
+     <span class="syntax-property">textArea</span>.<span class="syntax-property">style</span>.<span class="syntax-property">left</span> = <span class="syntax-string">'-9999px'</span>;
+     <span class="syntax-property">document</span>.<span class="syntax-property">body</span>.<span class="syntax-function">appendChild</span>(<span class="syntax-property">textArea</span>);
+     <span class="syntax-property">textArea</span>.<span class="syntax-function">focus</span>();
+     <span class="syntax-property">textArea</span>.<span class="syntax-function">select</span>();
+     <span class="syntax-property">document</span>.<span class="syntax-function">execCommand</span>(<span class="syntax-string">'copy'</span>);
+     <span class="syntax-property">document</span>.<span class="syntax-property">body</span>.<span class="syntax-function">removeChild</span>(<span class="syntax-property">textArea</span>);
+   }
+   <span class="syntax-keyword">return</span> <span class="syntax-keyword">true</span>;
+ } <span class="syntax-keyword">catch</span> (<span class="syntax-property">err</span>) {
+   <span class="syntax-property">console</span>.<span class="syntax-function">error</span>(<span class="syntax-string">'Copy failed:'</span>, <span class="syntax-property">err</span>);
+   <span class="syntax-keyword">return</span> <span class="syntax-keyword">false</span>;
+ }
+}</code></pre>
+                   </div>
+               </div>
+
+               <!-- WCAG -->
+               <div id="wcag" class="mb-12">
+                   <h3 class="text-2xl font-semibold text-white mb-4">WCAG 2.1 Compliance</h3>
+                   
+                   <div class="overflow-x-auto">
+                       <table>
+                           <thead>
+                               <tr>
+                                   <th>Niveau</th>
+                                   <th>Texte normal</th>
+                                   <th>Texte large (18pt+)</th>
+                                   <th>UI Components</th>
+                               </tr>
+                           </thead>
+                           <tbody class="text-sm">
+                               <tr>
+                                   <td class="font-semibold text-green-400">AA (Minimum)</td>
+                                   <td>4.5:1</td>
+                                   <td>3:1</td>
+                                   <td>3:1</td>
+                               </tr>
+                               <tr>
+                                   <td class="font-semibold text-purple-400">AAA (Enhanced)</td>
+                                   <td>7:1</td>
+                                   <td>4.5:1</td>
+                                   <td>3:1</td>
+                               </tr>
+                           </tbody>
+                       </table>
+                   </div>
+
+                   <div class="tip-box mt-6">
+                       <strong class="text-green-400">Note:</strong> L'algorithme <code>getAccessibleTextColor()</code> 
+                       garantit automatiquement le respect du niveau AA en choisissant systématiquement la couleur de texte 
+                       offrant le meilleur contraste disponible (noir ou blanc).
+                   </div>
+               </div>
+           </section>
+
+           <!-- State Management -->
+           <section class="doc-section mb-16">
+               <h2 class="text-3xl font-bold mb-6 flex items-center gap-3">
+                   <span class="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center text-sm">06</span>
+                   State Management
+               </h2>
+
+               <h3 class="text-xl font-semibold text-white mb-4">Système de Verrouillage</h3>
+               <p class="text-white/70 mb-6">
+                   Permet de figer une ou plusieurs couleurs pendant la génération. Les couleurs verrouillées 
+                   servent d'ancre pour recalculer les harmonies des couleurs non-verrouillées.
+               </p>
+
+               <div class="code-block mb-6">
+                   <div class="code-header">
+                       <span class="text-sm text-white/40">Lock State & Generation Logic</span>
+                   </div>
+                   <pre class="p-4 overflow-x-auto text-sm font-mono"><code><span class="syntax-keyword">let</span> <span class="syntax-property">lockedColors</span> = { 
+ <span class="syntax-property">primary</span>: <span class="syntax-keyword">false</span>, 
+ <span class="syntax-property">secondary</span>: <span class="syntax-keyword">false</span>, 
+ <span class="syntax-property">accent</span>: <span class="syntax-keyword">false</span> 
+};
+
+<span class="syntax-keyword">function</span> <span class="syntax-function">generatePalette</span>() {
+ <span class="syntax-keyword">const</span> <span class="syntax-property">harmonyType</span> = <span class="syntax-property">document</span>.<span class="syntax-function">getElementById</span>(<span class="syntax-string">'harmony-select'</span>).<span class="syntax-property">value</span>;
+ <span class="syntax-keyword">const</span> <span class="syntax-property">baseHue</span> = <span class="syntax-property">Math</span>.<span class="syntax-function">floor</span>(<span class="syntax-property">Math</span>.<span class="syntax-function">random</span>() * <span class="syntax-number">360</span>);
+ <span class="syntax-keyword">const</span> <span class="syntax-property">palette</span> = <span class="syntax-property">ColorHarmonies</span>[<span class="syntax-property">harmonyType</span>](<span class="syntax-property">baseHue</span>);
+ 
+ <span class="syntax-comment">// Ne met à jour que les couleurs non-verrouillées</span>
+ <span class="syntax-keyword">if</span> (!<span class="syntax-property">lockedColors</span>.<span class="syntax-property">primary</span>) {
+   <span class="syntax-property">currentPalette</span>.<span class="syntax-property">primary</span> = <span class="syntax-function">hslToHex</span>(<span class="syntax-property">palette</span>.<span class="syntax-property">dominant</span>);
+ }
+ <span class="syntax-comment">// ... etc</span>
+}</code></pre>
+               </div>
+
+               <div class="warning-box">
+                   <strong class="text-red-400">Comportement:</strong> Si une couleur est verrouillée, l'algorithme 
+                   d'harmonie continue de générer des valeurs pour les autres couleurs, mais la teinte de base 
+                   (<code>baseHue</code>) est recalculée aléatoirement à chaque itération. Pour une cohérence parfaite, 
+                   considérez la dérivation de la teinte base à partir de la couleur verrouillée (conversion HEX→HSL inverse).
+               </div>
+           </section>
+
+           <!-- Footer -->
+           <footer class="border-t border-white/10 pt-8 mt-16 text-center text-white/40 text-sm">
+               <p>ColorHarmony Pro Documentation • Generated for Senior Creative Technologists</p>
+               <p class="mt-2">WCAG 2.1 Compliant • HSL Color Space • Modulo 360° Mathematics</p>
+           </footer>
+       </main>
+   </div>
+
+   <script>
+       // Smooth scroll for navigation links
+       document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+           anchor.addEventListener('click', function (e) {
+               e.preventDefault();
+               const target = document.querySelector(this.getAttribute('href'));
+               if (target) {
+                   target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+               }
+           });
+       });
+
+       // Active nav link highlighting
+       const sections = document.querySelectorAll('.doc-section');
+       const navLinks = document.querySelectorAll('.nav-link');
+
+       window.addEventListener('scroll', () => {
+           let current = '';
+           sections.forEach(section => {
+               const sectionTop = section.offsetTop;
+               if (scrollY >= sectionTop - 200) {
+                   current = section.getAttribute('id');
+               }
+           });
+
+           navLinks.forEach(link => {
+               link.classList.remove('active');
+               if (link.getAttribute('href') === '#' + current) {
+                   link.classList.add('active');
+               }
+           });
+       });
+   </script>
+</body>
+</html>
