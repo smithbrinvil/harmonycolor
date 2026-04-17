@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Polar Branding Sketches - Phase 01</title>
+    <link href="https://fonts.googleapis.com/css2?family=Caveat&family=Inter:wght@300;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --dot-color: rgba(100, 110, 130, 0.25);
+            --page-bg: #F7F5F0;
+            --sketch-color: #1A1714;
+            --light-sketch: rgba(26, 23, 20, 0.35);
+            --guide-color: rgba(80, 100, 200, 0.2);
+            --annotation-color: #4A6FA5;
+            --font-main: 'Inter', sans-serif;
+            --font-sketch: 'Caveat', cursive;
+        }
+
+        body {
+            background-color: #d1d1d1;
+            margin: 0;
+            padding: 40px;
+            display: flex;
+            justify-content: center;
+        }
+
+        /* Dot Grid Background */
+        .sketchbook-page {
+            width: 1000px;
+            background-color: var(--page-bg);
+            background-image: radial-gradient(var(--dot-color) 0.8px, transparent 0.8px);
+            background-size: 20px 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            padding: 40px;
+            position: relative;
+            color: var(--sketch-color);
+            font-family: var(--font-main);
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            border-bottom: 1px solid rgba(26, 23, 20, 0.1);
+            padding-bottom: 10px;
+            margin-bottom: 30px;
+        }
+
+        .project-name { font-weight: 600; font-size: 1.2rem; text-transform: uppercase; letter-spacing: 2px; }
+        .page-type { font-size: 0.8rem; color: var(--annotation-color); font-weight: 600; }
+
+        .layout-grid {
+            display: grid;
+            grid-template-columns: 320px 1fr;
+            gap: 40px;
+        }
+
+        /* Zones */
+        .section-title {
+            font-family: var(--font-sketch);
+            font-size: 1.4rem;
+            color: var(--annotation-color);
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .thumbnail-zone {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+
+        .thumb-cell {
+            width: 85px;
+            height: 85px;
+            border: 1px solid rgba(0,0,0,0.05);
+            position: relative;
+            background: white;
+        }
+
+        .cell-number {
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            font-size: 10px;
+            color: var(--light-sketch);
+        }
+
+        .roughs-zone {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+        }
+
+        .rough-container {
+            border: 1px dashed var(--guide-color);
+            padding: 15px;
+            position: relative;
+        }
+
+        .hero-zone {
+            margin-top: 40px;
+            border-top: 2px solid rgba(0,0,0,0.05);
+            padding-top: 30px;
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 40px;
+        }
+
+        /* SVG Styles */
+        .sketch-stroke { stroke: var(--sketch-color); stroke-width: 1.8; fill: none; stroke-linecap: round; }
+        .sketch-light { stroke: var(--light-sketch); stroke-width: 1; fill: none; }
+        .sketch-guide { stroke: var(--guide-color); stroke-width: 1; fill: none; stroke-dasharray: 4,2; }
+        .sketch-annotation { stroke: var(--annotation-color); stroke-width: 1.2; fill: none; }
+        
+        .annotation-text {
+            font-family: var(--font-sketch);
+            fill: var(--annotation-color);
+            font-size: 14px;
+        }
+
+        .direction-card {
+            background: rgba(74, 111, 165, 0.05);
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+
+        .direction-tag { font-size: 0.7rem; font-weight: bold; color: var(--annotation-color); text-transform: uppercase; }
+        .direction-name { margin: 5px 0; font-size: 1rem; }
+        .direction-rationale { font-size: 0.8rem; line-height: 1.4; opacity: 0.8; }
+
+        .star-mark { color: #D4AF37; font-size: 1.2rem; position: absolute; bottom: 2px; right: 2px; }
+    </style>
+</head>
+<body>
+
+<div class="sketchbook-page">
+    <div class="page-header">
+        <div class="header-left">
+            <div class="project-label" style="font-size: 0.6rem; opacity: 0.5;">PROJECT</div>
+            <div class="project-name">POLAR COSMETICS</div>
+        </div>
+        <div class="header-center">
+            <span class="page-type">LOGO EXPLORATION / CONCEPT SKETCHES</span>
+        </div>
+        <div class="header-right" style="text-align: right;">
+            <div style="font-size: 0.7rem;">APRIL 2026</div>
+            <div style="font-family: var(--font-sketch);">p. 01</div>
+        </div>
+    </div>
+
+    <div class="layout-grid">
+        <div class="thumb-column">
+            <span class="section-title">Rapid Ideation</span>
+            <div class="thumbnail-zone">
+                <div class="thumb-cell"><span class="cell-number">01</span>
+                    <svg viewBox="0 0 80 80">
+                        <path class="sketch-stroke" d="M20,40 Q40,10 60,40 Q40,70 20,40" /> </svg>
+                </div>
+                <div class="thumb-cell"><span class="cell-number">02</span>
+                    <svg viewBox="0 0 80 80">
+                        <text x="25" y="50" class="sketch-stroke" style="font-size: 40px; font-weight: bold;">P</text>
+                        <path class="sketch-light" d="M20,20 L60,60 M60,20 L20,60" />
+                    </svg>
+                    <span class="star-mark">✦</span>
+                </div>
+                <div class="thumb-cell"><span class="cell-number">03</span>
+                    <svg viewBox="0 0 80 80">
+                        <circle cx="40" cy="40" r="25" class="sketch-stroke" />
+                        <path class="sketch-stroke" d="M30,40 L50,40 M40,30 L40,50" />
+                    </svg>
+                </div>
+                <div class="thumb-cell"><span class="cell-number">04</span>
+                    <svg viewBox="0 0 80 80">
+                        <path class="sketch-stroke" d="M40,20 L60,50 L20,50 Z" />
+                        <circle cx="40" cy="35" r="5" class="sketch-stroke" />
+                    </svg>
+                </div>
+                <div class="thumb-cell"><span class="cell-number">05</span>
+                    <svg viewBox="0 0 80 80">
+                        <path class="sketch-stroke" d="M20,30 C20,30 40,10 60,30 S40,70 40,70 S20,50 20,30" />
+                    </svg>
+                </div>
+                <div class="thumb-cell"><span class="cell-number">06</span>
+                    <svg viewBox="0 0 80 80">
+                        <path class="sketch-stroke" d="M10,40 H70 M40,10 V70" style="opacity: 0.3;"/>
+                        <path class="sketch-stroke" d="M30,30 L50,50 M50,30 L30,50" />
+                    </svg>
+                </div>
+                <div class="thumb-cell"><span class="cell-number">07</span>
+                    <svg viewBox="0 0 80 80">
+                        <path class="sketch-stroke" d="M20,20 L60,20 L40,60 Z" />
+                    </svg>
+                </div>
+                <div class="thumb-cell"><span class="cell-number">08</span>
+                    <svg viewBox="0 0 80 80">
+                        <circle cx="40" cy="40" r="20" class="sketch-light" />
+                        <path class="sketch-stroke" d="M30,45 Q40,20 50,45" />
+                    </svg>
+                </div>
+                <div class="thumb-cell"><span class="cell-number">09</span>
+                    <svg viewBox="0 0 80 80">
+                        <path class="sketch-stroke" d="M20,60 V20 H40 Q60,20 60,40 Q60,60 40,60 H20" />
+                    </svg>
+                    <span class="star-mark">✦</span>
+                </div>
+                <div class="thumb-cell"><span class="cell-number">10</span>
+                    <svg viewBox="0 0 80 80">
+                        <path class="sketch-stroke" d="M40,15 L45,35 L65,35 L50,45 L55,65 L40,55 L25,65 L30,45 L15,35 L35,35 Z" />
+                    </svg>
+                </div>
+                <div class="thumb-cell"><span class="cell-number">11</span>
+                    <svg viewBox="0 0 80 80">
+                        <path class="sketch-stroke" d="M20,40 Q40,20 60,40" />
+                        <path class="sketch-stroke" d="M20,50 Q40,30 60,50" />
+                    </svg>
+                </div>
+                <div class="thumb-cell"><span class="cell-number">12</span>
+                    <svg viewBox="0 0 80 80">
+                        <rect x="25" y="25" width="30" height="30" class="sketch-stroke" rx="2" />
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+        <div class="roughs-column">
+            <span class="section-title">Developed Roughs</span>
+            <div class="roughs-zone">
+                <div class="rough-container">
+                    <div class="direction-tag">A: Geometric Northern Star</div>
+                    <svg viewBox="0 0 160 160" width="100%">
+                        <circle cx="80" cy="80" r="50" class="sketch-guide" />
+                        <path class="sketch-stroke" d="M80,30 V130 M30,80 H130 M50,50 L110,110 M110,50 L50,110" />
+                        <text x="90" y="45" class="annotation-text">Perfect Symmetry</text>
+                    </svg>
+                </div>
+                <div class="rough-container">
+                    <div class="direction-tag">B: Organic Ice Flow</div>
+                    <svg viewBox="0 0 160 160" width="100%">
+                        <path class="sketch-stroke" d="M40,80 Q80,20 120,80 T40,80" />
+                        <path class="sketch-light" d="M50,85 Q80,40 110,85" />
+                        <text x="40" y="140" class="annotation-text">Natural "Free" Curves</text>
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="hero-zone">
+        <div class="hero-drawing">
+            <span class="section-title">Final Candidate: The Polar Monogram</span>
+            <svg viewBox="0 0 400 250" width="100%" height="300">
+                <rect x="50" y="50" width="150" height="150" class="sketch-guide" />
+                <circle cx="125" cy="125" r="75" class="sketch-guide" />
+                
+                <path class="sketch-stroke" style="stroke-width: 3;" d="M90,50 V200 M90,50 H140 C180,50 180,125 140,125 H90" />
+                <path class="sketch-stroke" style="stroke-width: 1.5;" d="M125,125 L160,200" />
+                
+                <path class="sketch-annotation" d="M185,85 L220,60" marker-end="url(#arrow)" />
+                <text x="225" y="60" class="annotation-text">Optical curve for premium feel</text>
+                
+                <path class="sketch-annotation" d="M90,210 L125,210" />
+                <text x="90" y="230" class="annotation-text">Stem width = 1/10th total height</text>
+            </svg>
+        </div>
+
+        <div class="hero-notes">
+            <div class="direction-card">
+                <span class="direction-tag">Direction C</span>
+                <h3 class="direction-name">Clinical Purity</h3>
+                <p class="direction-rationale">Combining the 'P' initial with the precision of a compass needle. Evokes honesty and Norwegian heritage.</p>
+                <p class="vectorization-note" style="font-size: 0.75rem; color: var(--annotation-color); margin-top: 10px;">
+                    → Illustrator: Use Golden Ratio circles for the bowl of the 'P'. Snap to 10pt grid.
+                </p>
+            </div>
+            
+            <div style="margin-top: 20px;">
+                <span class="section-title">Next Steps</span>
+                <ul style="font-size: 0.8rem; list-style: none; padding: 0;">
+                    <li>✓ Phase 01: Ideation</li>
+                    <li style="opacity: 0.5;">□ Phase 02: Vectorize Hero P</li>
+                    <li style="opacity: 0.5;">□ Phase 03: Typographic pairings</li>
+                    <li style="opacity: 0.5;">□ Phase 04: Packaging Mockups</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
